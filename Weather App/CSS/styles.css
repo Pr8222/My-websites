@@ -1,0 +1,55 @@
+body{
+    font-family: Arial, sans-serif;
+    background-image: linear-gradient(to right, #6c64fb, #24142c);
+    height: 100%;
+}
+
+.container{
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    max-width: 400px;
+    text-align: center;
+    color: white;
+}
+.cont{
+    display: flex;
+    text-align: center;
+}
+@keyframes notHoveredBtn {
+    from{background-color: #24142c;}
+    to{background-color: #6c64fb;}
+}
+.btn-outline-primary{
+    background-color: #6c64fb;
+    color: white;
+    animation-name: notHoveredBtn;
+    animation-duration: .5s;
+}
+@keyframes hoveredBtn {
+    from{background-color: #6c64fb;}
+    to{background-color: #24142c;} 
+}
+.btn-outline-primary:hover{
+    background-color: #6c64fb;
+    animation-name: hoveredBtn;
+    animation-duration: .5s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeInSlideUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  
+  #weatherResult {
+    animation: fadeInSlideUp 3s ease-out;
+  }
+  
