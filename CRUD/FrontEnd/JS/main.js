@@ -94,6 +94,7 @@ $(document).ready(function () {
         showToast("در هنگام ساخت کاربر مشکلی ایجاد شد " + error, "danger");
       },
     });
+    $("#addModal").modal("hide");
   }
   // Defining The Delete Row function
   function deleteRow(row, table) {
@@ -114,13 +115,15 @@ $(document).ready(function () {
         type: "Delete",
         url: `http://localhost:5203/api/Users/${userId}`,
         success: function (response) {
-          alert(`user with id ${userId} has been deleted successfully.`);
+          showToast(`کاربر با شناسه ${userId} با موفقیت حذف شد!`, "success");
           table.ajax.reload(null, false);
         },
         error: function (xhr, status, error) {
-          console.error("Error deleting user: " + error);
+          showToast("خطا در هنگام حذف کردن کاربر " + error, "danger");
         },
       });
+    } else {
+      showToast("کاربر حذف نشد.", "warning");
     }
   }
   function showToast(message, type) {
