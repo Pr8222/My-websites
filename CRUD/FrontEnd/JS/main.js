@@ -57,9 +57,12 @@ $(document).ready(function () {
     deleteRow(row, table);
   });
   $("#userTable tbody").on("click", ".modalBtn", function () {
+    var row = $(this).closest("tr");
     $("#editModal").modal("show");
   });
 
+
+  // All Of The Functions go here!!!!
   // Defining The Add User function
   function addUser() {
     // Check if passwords match
