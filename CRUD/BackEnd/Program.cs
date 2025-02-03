@@ -9,7 +9,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowSpecificOrigin",
         policy =>
         {
-            policy.WithOrigins("http://127.0.0.1:8080") // Allowing this url to access to the resources
+            policy.WithOrigins("http://127.0.0.1:8081") // Allowing this url to access to the resources
             .AllowAnyMethod()
             .AllowAnyHeader();
         }

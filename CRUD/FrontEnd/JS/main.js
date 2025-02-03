@@ -37,8 +37,6 @@ $(document).ready(function () {
         data: null,
         defaultContent: `
             <div class="action-buttons">
-              <button class="btn btn-light btn-sm editBtn mx-1">Edit</button>
-              <button class="btn btn-success btn-sm saveBtn mx-1" hidden>Save</button>
               <button class="btn btn-warning btn-sm modalBtn">Modal Edit</button>
               <button class="btn btn-danger btn-sm deleteBtn mx-1">Delete</button>
             </div>
@@ -59,8 +57,6 @@ $(document).ready(function () {
   $("#userTable tbody").on("click", ".modalBtn", function() {
     $("#editModal").modal("show");
   });
-  $("#userTable tbody").on("click", "saveBtn", function() {
-  });
 
   // Defining The Add User function
   function addUser(){   
@@ -68,9 +64,25 @@ $(document).ready(function () {
         Id: $("#addId").val(),
         Name: $("#addName").val(),
         Email: $("#addEmail").val(),
-
-    }
-
+        Password: $("#addPassword").val(),
+        Age: $("#addAge").val()
+    };
+    console.log(typeof(newUserData));
+    debugger;
+    $.ajax({
+      type: "Post",
+      url: "http://localhost:5203/api/Users",
+      data: JSON.stringify(newUserData),
+      contentType: "application/json",
+      dataType: "json",
+      success: function (response) {
+        alert("New user has been created successfully!");
+        table.ajax.reload(null, false);
+      }, 
+      error: function(xhr, status, error) {
+        console.error("Error creating user: " + error);
+      }
+    });
   }
   // Defining The Delete Row function
   function deleteRow(row, table) {
@@ -96,7 +108,7 @@ $(document).ready(function () {
                 alert(`user with id ${userId} has been deleted successfully.`);
                 table.ajax.reload(null, false);
             },
-            error: function (xhr, status, error) {
+            console.error: function (xhr, status, error) {
                 error("Error deleting user: " + error);
             }
             
