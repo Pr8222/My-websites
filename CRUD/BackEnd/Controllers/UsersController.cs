@@ -32,7 +32,7 @@ public class UsersController : ControllerBase
             Email = u.Email,
             Age = u.Age
         }).ToList();
-        return Ok(userDto);
+        return Ok(user);
     }
 
     // GET: api/users/5

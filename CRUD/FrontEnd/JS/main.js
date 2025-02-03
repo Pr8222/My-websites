@@ -57,8 +57,20 @@ $(document).ready(function () {
     deleteRow(row, table);
   });
   $("#userTable tbody").on("click", ".modalBtn", function () {
+    // Getting the row and data from the row that we want to edit
     var row = $(this).closest("tr");
+    var rowData = table.row(row).data();
+
+    $("#editId").val(rowData.id);
+    $("#editName").attr("placeholder",rowData.name);
+    $("#editEmail").attr("placeholder",rowData.email);
+    $("#editAge").attr("placeholder",rowData.age);
+
     $("#editModal").modal("show");
+
+    $("#saveEditBtn").off("click").on("click", function () {
+      saveModal(table, rowData);
+    });
   });
 
 
@@ -128,6 +140,45 @@ $(document).ready(function () {
     } else {
       showToast("کاربر حذف نشد.", "warning");
     }
+  }
+  // Defining the save button function for the modal editing
+  function saveModal(table, rowData){
+
+    // If The password is empty it stops the user to edit the row
+    if("#editPassword" === null){
+      $("#editPassword").addClass("is-invalid");
+      showToast("رمزعبور خالی است!", "danger");
+      return;
+    } else {
+      $("editPassword").removeClass("is-invalid");
+    }
+    // Getting the id
+    var userId = rowData.id;
+    // Declaring a variable to store the data from the modal
+    var updateData = {
+      ID: $("#editId").val(),
+      Name: $("#editName").val(),
+      Email: $("#editEmail").val(),
+      Password: $("#editPassword").val(),
+      Age: $("#editAge").val()
+    }
+
+
+
+    $.ajax({
+      type: "Put",
+      url: `http://localhost:5203/api/Users/${userId}`,
+      data: JSON.stringify(updateData),
+      contentType: "application/json",
+      dataType: "json",
+      success: function (response) {
+        showToast("اطلاعات با موفقیت تغییر یافتند.", "success");
+        table.ajax.reload(null, false);
+      }, error: function(xhr, status, error){
+        showToast("در هنگام ایجاد تغییرات، مشکلی پیش آمد.", "danger");
+      }
+    });
+    $("#editModal").modal("hide");
   }
   function showToast(message, type) {
     $("#actionToast .toast-body").text(message);

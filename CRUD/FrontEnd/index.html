@@ -41,44 +41,44 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Edit Row</h5>
+                    <h5 class="modal-title" id="editModalLabel">تغییر اطلاعات</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body container">
                     <form id="editForm">
                         <div class="row">
                             <div class="mb-3 col-3">
-                                <label for="modalId" class="form-label">ID</label>
-                                <input type="number" id="modalId" class="form-control">
+                                <label for="editId" class="form-label">شناسه کاربر</label>
+                                <input type="number" id="editId" class="form-control" disabled>
                             </div>
                             <div class="mb-3 col-9">
-                                <label for="modalName" class="form-label">Name</label>
-                                <input type="text" id="modalName" class="form-control">
+                                <label for="editName" class="form-label">نام کاربر</label>
+                                <input type="text" id="editName" class="form-control">
                             </div>
                             <div class="row">
                                 <div class="mb-3 col-12">
-                                    <lable for="modalEmail" class="form-label">Email</lable>
-                                    <input type="email" id="modalEmail" class="form-control">
+                                    <lable for="editEmail" class="form-label">پست الکترونیک</lable>
+                                    <input type="email" id="editEmail" class="form-control">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="mb-3 col-12">
-                                    <label for="modalPassword" class="form-label">Password</label>
-                                    <input type="password" id="modalPassword" class="form-control">
+                                    <label for="editPassword" class="form-label">رمزعبور</label>
+                                    <input type="password" id="editPassword" class="form-control">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="mb-3 col-12">
-                                    <label for="modalAge" class="form-label">Age</label>
-                                    <input type="number" id="modalAge" class="form-control">
+                                    <label for="editAge" class="form-label">سن</label>
+                                    <input type="number" id="editAge" class="form-control">
                                 </div>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="saveModalBtn">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
+                    <button type="button" class="btn btn-primary" id="saveEditBtn">ذخیره</button>
                 </div>
             </div>
         </div>
@@ -89,39 +89,39 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Add New Row</h5>
+                    <h5 class="modal-title" id="editModalLabel">کابر جدید</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body container">
                     <form id="addForm">
                         <div class="row">
                             <div class="mb-3 col-3">
-                                <label for="addId" class="form-label">ID</label>
+                                <label for="addId" class="form-label">شناسه کابر</label>
                                 <input type="number" id="addId" class="form-control">
                             </div>
                             <div class="mb-3 col-9">
-                                <label for="addName" class="form-label">Name</label>
+                                <label for="addName" class="form-label">نام کابر</label>
                                 <input type="text" id="addName" class="form-control">
                             </div>
                             <div class="row">
                                 <div class="mb-3 col-12">
-                                    <lable for="addEmail" class="form-label">Email</lable>
+                                    <lable for="addEmail" class="form-label">پست الکترونیک</lable>
                                     <input type="email" id="addEmail" class="form-control">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="mb-3 col-6">
-                                    <label for="addPassword" class="form-label">Password</label>
+                                    <label for="addPassword" class="form-label">رمزعبور</label>
                                     <input type="password" id="addPassword" class="form-control">
                                 </div>
                                 <div class="mb-3 col-6">
-                                    <label for="addConfirmPassword" class="form-label">Confirm Password</label>
+                                    <label for="addConfirmPassword" class="form-label">تکرار رمزعبور</label>
                                     <input type ="password" id="addConfirmPassword" class="form-control">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="mb-3 col-12">
-                                    <label for="addAge" class="form-label">Age</label>
+                                    <label for="addAge" class="form-label">سن</label>
                                     <input type="number" id="addAge" class="form-control">
                                 </div>
                             </div>
@@ -129,8 +129,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="addModalBtn">Add Row</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">لغو</button>
+                    <button type="button" class="btn btn-primary" id="addModalBtn">اضافه کردن</button>
                 </div>
             </div>
         </div>
