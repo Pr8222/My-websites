@@ -23,7 +23,7 @@ builder.Services.AddSwaggerGen();
 
 var configuration = builder.Configuration;
 builder.Services.AddDbContext<UserContext>(options =>
-    options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
@@ -32,7 +32,6 @@ app.UseCors("AllowSpecificOrigin"); // Enables CORS before routing
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<UserContext>();
-    dbContext.Database.Migrate();
 }
 
 // Configure the HTTP request pipeline.
