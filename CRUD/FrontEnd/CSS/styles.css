@@ -1,0 +1,31 @@
+.addRow{
+    float: left;
+    margin-right: 3rem;
+    margin-left: 0.5rem;
+}
+th{
+    text-align: right;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+    /* Adds spacing between buttons */
+    justify-content: center;
+    /* Centers buttons horizontally */
+    align-items: center;
+    /* Centers buttons vertically */
+  }
+  
+  .action-buttons button {
+    margin: 0;
+    padding: 4px 8px;
+    /* Adjust button padding as needed */
+    font-size: 14px;
+    /* Ensure uniform font size */
+  }
+  
+  .form-control:hover{
+    border-color: #c2dbfe;
+    box-shadow: 2px 2px #c2dbfe;
+  }
