@@ -1,6 +1,4 @@
-﻿
-
-using Data;
+﻿using Data;
 using Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
