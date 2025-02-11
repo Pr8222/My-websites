@@ -60,10 +60,10 @@ public class UserController : ControllerBase
         return Ok(CreatedAtAction(nameof(GetUser), new { id = user.Id }, user));
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteUser(int id)
+    [HttpDelete("{username}")]
+    public async Task<IActionResult> DeleteUser(string username)
     {
-        var user = await _userContext.Users.FindAsync(id);
+        var user = await _userContext.Users.FirstOrDefaultAsync(u =>  !u.UserName.Equals(username));
         if (user == null)
         {
             return NotFound();
