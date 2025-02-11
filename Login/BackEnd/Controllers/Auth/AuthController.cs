@@ -16,6 +16,7 @@ public class AuthController : ControllerBase
 {
     private readonly UserContext _userContext;
     private readonly IConfiguration _config;
+    private readonly PasswordService _passwordService;
     private readonly IPasswordHasher<User> _passwordHasher;
     public AuthController(UserContext context, IConfiguration configuration, IPasswordHasher<User> passwordHasher)
     {
@@ -23,6 +24,30 @@ public class AuthController : ControllerBase
         _config = configuration;
         _passwordHasher = passwordHasher;
     }
+
+    [HttpPost("Register")]
+    public async Task<IActionResult> Register([FromBody] UserDTO userDTO)
+    {
+        if (_userContext.Users.Any(u => u.UserName == userDTO.UserName))
+        {
+            return BadRequest("Username already taken.");
+        }
+
+        var user = new User
+        {
+            UserName = userDTO.UserName,
+            Email = userDTO.Email,
+            Password = userDTO.Password,
+            Age = userDTO.Age
+        };
+        user.Password = _passwordService.HashPassword(user, user.Password);
+
+        _userContext.Users.Add(user);
+        await _userContext.SaveChangesAsync();
+
+        return Ok();
+    }
+
     [HttpPost("login")]
     public IActionResult Login([FromBody] Login login)
     {
@@ -52,6 +77,10 @@ public class AuthController : ControllerBase
                 new Claim(ClaimTypes.Name, username)
             }),
             Expires = DateTime.UtcNow.AddHours(1),
+
+            Issuer = jwtSettings["Issuer"],
+            Audience = jwtSettings["Audience"],
+
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature)
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);

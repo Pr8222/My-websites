@@ -1,9 +1,11 @@
 ﻿using Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
 namespace LoginAPI.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ControllerBase
@@ -37,29 +39,6 @@ public class UserController : ControllerBase
         return user;
     }
 
-    [HttpPost("Register")]
-    public async Task<IActionResult> Register([FromBody] UserDTO userDTO)
-    {
-        if (_userContext.Users.Any(u => u.UserName == userDTO.UserName))
-        {
-            return BadRequest("Username already taken.");
-        }
-
-        var user = new User
-        {
-            UserName = userDTO.UserName,
-            Email = userDTO.Email,
-            Password = userDTO.Password,
-            Age = userDTO.Age
-        };
-        user.Password = _passwordService.HashPassword(user, user.Password);
-
-        _userContext.Users.Add(user);
-        await _userContext.SaveChangesAsync();
-
-        return Ok(CreatedAtAction(nameof(GetUser), new { id = user.Id }, user));
-    }
-
     [HttpDelete("DeleteUser")]
     public async Task<IActionResult> DeleteUser(string username)
     {
@@ -75,8 +54,46 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
+    [HttpPut("EditUser")]
+    public async Task<IActionResult> Edit(string username, [FromBody] UserDTO userDTO)
+    {
+        var user = await _userContext.Users.FirstOrDefaultAsync(u => u.UserName.Equals(username));
+        if (user == null)
+        {
+            return BadRequest("User not found.");
+        }
 
+        // Update the existing user object instead of creating a new one
+        user.UserName = userDTO.UserName;
+        user.Email = userDTO.Email;
+        user.Password = _passwordService.HashPassword(user, userDTO.Password);
+        user.Age = userDTO.Age;
 
+        _userContext.Entry(user).State = EntityState.Modified;
+
+        try
+        {
+            await _userContext.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!await UserExists(username)) // Ensure this is awaited
+            {
+                return NotFound();
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        return NoContent();
+    }
+
+    private async Task<bool> UserExists(string username)
+    {
+        return await _userContext.Users.AnyAsync(e => e.UserName == username);
+    }
 }
 
 
