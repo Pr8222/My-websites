@@ -104,6 +104,6 @@ hr {
     font-weight: 600;
 }
 
-#logoutBtn {
-    margin-top: 5rem;
+#actions .btn {
+    margin-top: 20px;
 }
