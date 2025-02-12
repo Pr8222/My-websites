@@ -39,7 +39,8 @@ public class AuthController : ControllerBase
             UserName = userDTO.UserName,
             Email = userDTO.Email,
             Password = userDTO.Password,
-            Age = userDTO.Age
+            Age = userDTO.Age,
+            Role = userDTO.Role
         };
         user.Password = _passwordService.HashPassword(user, user.Password);
 
@@ -60,13 +61,13 @@ public class AuthController : ControllerBase
         var result = _passwordHasher.VerifyHashedPassword(user, user.Password, login.Password);
         if (result == PasswordVerificationResult.Success)
         {
-            var token = GenerateJwtToken(user.UserName);
+            var token = GenerateJwtToken(user.UserName, user.Role);
             return Ok(new { Token = token });
         }
         return Unauthorized("Invalid credentials.");
     }
 
-    private string GenerateJwtToken(string username)
+    private string GenerateJwtToken(string username, string role)
     {
         var jwtSettings = _config.GetSection("JwtSettings");
         var secretKey = Encoding.ASCII.GetBytes(jwtSettings["Secret"]);
@@ -75,7 +76,8 @@ public class AuthController : ControllerBase
         {
             Subject = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.Name, username)
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Role, role)
             }),
             Expires = DateTime.UtcNow.AddHours(1),
 

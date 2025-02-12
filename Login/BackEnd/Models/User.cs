@@ -17,5 +17,7 @@ namespace Models
         public string Password { get; set; }
         [Column("age")]
         public int Age { get; set; }
+        [Column("role")]
+        public string Role {  get; set; }
     }
 }
