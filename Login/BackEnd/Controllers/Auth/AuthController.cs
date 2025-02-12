@@ -23,6 +23,7 @@ public class AuthController : ControllerBase
         _userContext = context;
         _config = configuration;
         _passwordHasher = passwordHasher;
+        _passwordService = new PasswordService();
     }
 
     [HttpPost("Register")]
