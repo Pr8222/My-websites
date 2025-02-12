@@ -20,6 +20,7 @@ $(document).ready(function () {
                 let token = response.token;
 
                 if(token) {
+                    localStorage.setItem('username', userData.username);
                     localStorage.setItem('token', token);
                     alert("login successful");
                     document.location.href = "/HTML/dashboard.html"

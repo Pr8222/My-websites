@@ -17,13 +17,14 @@ $(document).ready(function () {
         type: "POST",
         url: "http://localhost:5224/api/Auth/Register",
         data: JSON.stringify(newUserData),
-        contentType: "application/json",
         dataType: "json",
         success: function (response) {
+          console.log("Response: " + response)
           document.location.href = "/HTML/login.html";
         },
         error: function (xhr, status, error) {
           console.log(error, status);
+          console.log("Bye Bye")
         },
       });
     

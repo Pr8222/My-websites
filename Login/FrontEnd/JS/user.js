@@ -46,7 +46,7 @@ $(document).ready(function () {
       };
       $.ajax({
         type: "PUT",
-        url: `http://localhost:5224/api/User/EditUser?username=${username}`,
+        url: `http://localhost:5224/api/User/EditUser?username=${localStorage.getItem("username")}`,
         data: JSON.stringify(updatedData),
         contentType: "application/json",
         dataType: "json",

@@ -24,7 +24,6 @@ namespace LoginAPI.Migrations
             modelBuilder.Entity("Models.User", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("id");
 

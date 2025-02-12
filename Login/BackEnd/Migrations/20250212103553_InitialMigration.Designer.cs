@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LoginAPI.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20250212085525_GuidMigration")]
-    partial class GuidMigration
+    [Migration("20250212103553_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,7 +27,6 @@ namespace LoginAPI.Migrations
             modelBuilder.Entity("Models.User", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)")
                         .HasColumnName("id");
 
