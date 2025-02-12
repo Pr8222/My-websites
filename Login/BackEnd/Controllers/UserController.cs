@@ -1,5 +1,6 @@
 ﻿using Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
@@ -19,6 +20,7 @@ public class UserController : ControllerBase
         _passwordService = new PasswordService();
     }
     //Get: api/user all users
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
     {
@@ -88,6 +90,44 @@ public class UserController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    // Super Admin Promotes A Regular User To Admin User
+    [Authorize("SuperAdmin")]
+    [HttpPut("Promote")]
+    public async Task<IActionResult> Promote(string username)
+    {
+        var user = _userContext.Users.FirstOrDefault(u => u.UserName.Equals(username));
+        if (user == null)
+        {
+            return NotFound("There's no such user with that username");
+        }
+        user.Role = "Admin";
+        await _userContext.SaveChangesAsync();
+
+        return Ok(new {Message  = "User Promoted to admin!"});
+    }
+
+    // Super Admin Demotes An Admin To A Regular User
+    [Authorize("SuperAdmin")]
+    [HttpPut("Demote")]
+    public async Task<IActionResult> Demote(string username) 
+    {
+        var admin = _userContext.Users.FirstOrDefault(a => a.UserName.Equals(username));
+
+        if(admin == null)
+        {
+            return NotFound("There's no such user with that username");
+        }
+        if(admin.Role != "Admin")
+        {
+            return NotFound("The user is not admin!");
+        }
+
+        admin.Role = "User";
+        await _userContext.SaveChangesAsync();
+
+        return Ok(new { Message = "Admin has been demoted!" });
     }
 
     private async Task<bool> UserExists(string username)
