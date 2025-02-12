@@ -6,8 +6,8 @@ namespace Models
     [Table("user")]
     public class User
     {
-        [Column("id"), Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        [Column("id"), Key]
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         [Column("username")]
         public string UserName { get; set; }
