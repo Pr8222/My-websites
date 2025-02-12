@@ -15,7 +15,7 @@ $(document).ready(function () {
       // Calling the register function from the api
       $.ajax({
         type: "POST",
-        url: "http://localhost:5224/api/User/Register",
+        url: "http://localhost:5224/api/Auth/Register",
         data: JSON.stringify(newUserData),
         contentType: "application/json",
         dataType: "json",

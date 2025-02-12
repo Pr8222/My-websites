@@ -16,7 +16,14 @@ $(document).ready(function () {
             contentType: "application/json",
             dataType: "json",
             success: function (response) {
-                document.location.href = "/HTML/userPage.html";
+
+                let token = response.token;
+
+                if(token) {
+                    localStorage.setItem('token', token);
+                    alert("login successful");
+                    document.location.href = "/HTML/dashboard.html"
+                }
             }, error: function (xhr, status, error) {
                 alert(error)
             }
