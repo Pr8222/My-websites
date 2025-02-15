@@ -20,7 +20,7 @@ public class UserController : ControllerBase
         _passwordService = new PasswordService();
     }
     //Get: api/user all users
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, SuperAdmin")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
     {
@@ -28,6 +28,7 @@ public class UserController : ControllerBase
     }
 
     //Get: api/user/userPage
+    [AllowAnonymous]
     [HttpGet("userPage")]
     public async Task<ActionResult<User>> GetUser(string username)
     {

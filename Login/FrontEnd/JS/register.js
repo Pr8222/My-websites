@@ -17,6 +17,7 @@ $(document).ready(function () {
         type: "POST",
         url: "http://localhost:5224/api/Auth/Register",
         data: JSON.stringify(newUserData),
+        contentType: "application/json",
         dataType: "json",
         success: function (response) {
           console.log("Response: " + response)
