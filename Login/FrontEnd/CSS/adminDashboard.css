@@ -5,6 +5,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: "Poppins", sans-serif;
+    font-size: 14px;
 }
 
 body {
@@ -14,15 +15,68 @@ body {
     min-height: 100vh;
     background-image: url('/Images/img.jpg');
     background-position: center;
+    flex-direction: column;
 }
 
 .wrapper {
-    width: max-content;
-    background-color: transparent;
+    width: 75%;
+    background-color: rgba(0, 0, 0, .1);
     border: 2px solid rgba(255, 255, 255, .2);
     backdrop-filter: blur(5px);
     box-shadow: 0 0 10px rgba(0, 0, 0, .2);
     color: #fff;
     border-radius: 10px;
     padding: 30px 40px;
+    text-align: center;
+}
+
+h1 {
+    font-size: large;
+    font-weight: 900;
+}
+
+.action-buttons {
+    display: flex;
+}
+
+.wrapper table {
+    width: 100%;
+}
+
+.superAdminOnly {
+    width: 50%;
+    height: 40px;
+    background: #fff;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+    padding: 5px;
+    margin: 5px;
+}
+
+.superAdminOnly:disabled{
+    background-color: #7943D7;
+    color: rgba(255, 255, 255, .2);
+    cursor: default;
+}
+
+.dt-container select.dt-input {
+    background-color: #AC57D8;
+}
+
+div.dt-layout-cell .dt-layout-end .dt-paging-button {
+    border: 2px solid rgba(255, 255, 255, .2);
+    border-radius: 10px;
+}
+
+div.dt-container .dt-paging .dt-paging-button:hover {
+    background: none;
+    background-color: #330A6A !important;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    color: white !important;
 }

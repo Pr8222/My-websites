@@ -40,7 +40,7 @@ public class AuthController : ControllerBase
             Email = userDTO.Email,
             Password = userDTO.Password,
             Age = userDTO.Age,
-            Role = userDTO.Role
+            Role = "User"
         };
         user.Password = _passwordService.HashPassword(user, user.Password);
 

@@ -16,10 +16,11 @@ $(document).ready(function () {
       dataType: "json",
       success: function (response) {
         let token = response.token;
-
+        const jsonToken  = ParseJWT(token);
         if (token) {
           localStorage.setItem("username", userData.username);
           localStorage.setItem("token", token);
+          localStorage.setItem("role", jsonToken.role)
           CheckUserRole(userData.username);
         }
       },
@@ -28,6 +29,19 @@ $(document).ready(function () {
       },
     });
   });
+
+  function ParseJWT(JWTToken) {
+    const base64Url = JWTToken.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+        atob(base64)
+            .split('')
+            .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+            .join('')
+    );
+
+    return JSON.parse(jsonPayload);
+  }
 
   function CheckUserRole(username) {
     $.ajax({

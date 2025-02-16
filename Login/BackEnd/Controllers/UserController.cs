@@ -94,7 +94,7 @@ public class UserController : ControllerBase
     }
 
     // Super Admin Promotes A Regular User To Admin User
-    [Authorize("SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin")]
     [HttpPut("Promote")]
     public async Task<IActionResult> Promote(string username)
     {
@@ -103,6 +103,7 @@ public class UserController : ControllerBase
         {
             return NotFound("There's no such user with that username");
         }
+
         user.Role = "Admin";
         await _userContext.SaveChangesAsync();
 
@@ -110,7 +111,7 @@ public class UserController : ControllerBase
     }
 
     // Super Admin Demotes An Admin To A Regular User
-    [Authorize("SuperAdmin")]
+    [Authorize(Roles = "SuperAdmin")]
     [HttpPut("Demote")]
     public async Task<IActionResult> Demote(string username) 
     {
