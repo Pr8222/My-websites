@@ -52,8 +52,48 @@ $(document).ready(function () {
     var row = $(this).closest("tr");
     Demote(table, row);
   });
-
+  
+  // This function is called when the super admin wants to promote a normal user
   function Promote(table, row) {
 
+    let rowData = table.row(row).data();
+    let username = rowData.userName;
+
+    console.log("Begining the process to promote a user to an admin: ", rowData);
+
+    // Call the promote api
+    $.ajax({
+      type: "PUT",
+      url: `http://localhost:5224/api/User/Promote?username=${username}`,
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+      success: function (response) {
+        alert("User has become admin: " + response.data);
+        table.ajax.reload(null, false);
+      }, error: function (xhr, status, error) {
+        alert("There was an error to make the user to admin: "+ xhr + error)
+      }
+    });
+  }
+  // This function is called when the super admin wants to demote an admin
+  function Demote(table, row) {
+    // Getting the data of the selected row
+    var rowData = table.row(row).data();
+    var username = rowData.userName;
+
+    $.ajax({
+      type: "PUT",
+      url: `http://localhost:5224/api/User/Demote?username=${username}`,
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+      success: function (response) {
+        alert("The admin has demoted to user: " + response.data);
+        table.ajax.reload(null, false);
+      }, error: function (xhr, status, error) {
+        alert("There was an error while demoting the admin: " + xhr + error);
+      }
+    });
   }
 });
