@@ -43,7 +43,7 @@ h1 {
     width: 100%;
 }
 
-.superAdminOnly {
+.wrapper .btn {
     width: 50%;
     height: 40px;
     background: #fff;

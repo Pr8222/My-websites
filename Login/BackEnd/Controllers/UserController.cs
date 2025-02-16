@@ -24,7 +24,20 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
     {
-        return await _userContext.Users.ToListAsync();
+        var users = _userContext.Users.Select(u => new {
+            u.Id,
+            u.UserName,
+            u.Email,
+            u.Age,
+            u.Role
+        }).ToList();
+
+        return Ok(new
+        {
+            recordsTotal = users.Count,
+            recordsFiltered = users.Count,
+            data = users
+        });
     }
 
     //Get: api/user/userPage

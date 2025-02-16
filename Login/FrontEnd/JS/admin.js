@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
   let userRole = localStorage.getItem("role");
   let table = $("#usersTable").DataTable({
     processing: true,
@@ -14,34 +13,41 @@ $(document).ready(function () {
           xhr.setRequestHeader("Authorization", "Bearer " + token); // Set JWT token
         }
       },
-      dataSrc: ""
+      dataSrc: function (json) {
+        console.log("DataTables received:", json); // Debugging
+        if (!json.data) {
+          console.error("DataTables: No 'data' array in response!");
+          return [];
+        }
+        return json.data; // Return actual user data
+      },
     },
     columns: [
-        {data: "id"},
-        {data: "userName"},
-        {data: "email"},
-        {data: "age"},
-        {data: "role"},
-        {
-            data: null,
-            defaultContent: `
+      { data: "id" },
+      { data: "userName" },
+      { data: "email" },
+      { data: "age" },
+      { data: "role" },
+      {
+        data: null,
+        defaultContent: `
             <div class="action-buttons">
                 <button class="superAdminOnly promoteUser" disabled>Promote</button>
                 <button class="superAdminOnly demoteUser" disabled>Demote</button>
             </div>
-            `
-        }
-    ]
+            `,
+      },
+    ],
   });
 
   $(".verification").on("click", () => {
-    if(userRole === "SuperAdmin") {
+    if (userRole === "SuperAdmin") {
       $(".promoteUser").removeAttr("disabled");
       $(".demoteUser").removeAttr("disabled");
     } else {
       console.error("Sorry you are not a super User!");
     }
-  })
+  });
 
   $("#usersTable tbody").on("click", ".promoteUser", function () {
     var row = $(this).closest("tr");
@@ -52,14 +58,16 @@ $(document).ready(function () {
     var row = $(this).closest("tr");
     Demote(table, row);
   });
-  
+
   // This function is called when the super admin wants to promote a normal user
   function Promote(table, row) {
-
     let rowData = table.row(row).data();
     let username = rowData.userName;
 
-    console.log("Begining the process to promote a user to an admin: ", rowData);
+    console.log(
+      "Begining the process to promote a user to an admin: ",
+      rowData
+    );
 
     // Call the promote api
     $.ajax({
@@ -71,9 +79,10 @@ $(document).ready(function () {
       success: function (response) {
         alert("User has become admin: " + response.data);
         table.ajax.reload(null, false);
-      }, error: function (xhr, status, error) {
-        alert("There was an error to make the user to admin: "+ xhr + error)
-      }
+      },
+      error: function (xhr, status, error) {
+        alert("There was an error to make the user to admin: " + xhr + error);
+      },
     });
   }
   // This function is called when the super admin wants to demote an admin
@@ -91,9 +100,10 @@ $(document).ready(function () {
       success: function (response) {
         alert("The admin has demoted to user: " + response.data);
         table.ajax.reload(null, false);
-      }, error: function (xhr, status, error) {
+      },
+      error: function (xhr, status, error) {
         alert("There was an error while demoting the admin: " + xhr + error);
-      }
+      },
     });
   }
 });
