@@ -43,8 +43,8 @@ h1 {
     width: 100%;
 }
 
-.wrapper .btn {
-    width: 50%;
+.btn, .superAdminOnly {
+    width: 100%;
     height: 40px;
     background: #fff;
     border: none;
@@ -57,6 +57,10 @@ h1 {
     font-weight: 600;
     padding: 5px;
     margin: 5px;
+}
+
+.btn {
+    width: 50%;
 }
 
 .superAdminOnly:disabled{

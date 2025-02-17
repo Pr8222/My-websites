@@ -14,7 +14,6 @@ $(document).ready(function () {
         }
       },
       dataSrc: function (json) {
-        console.log("DataTables received:", json); // Debugging
         if (!json.data) {
           console.error("DataTables: No 'data' array in response!");
           return [];
@@ -32,8 +31,8 @@ $(document).ready(function () {
         data: null,
         defaultContent: `
             <div class="action-buttons">
-                <button class="superAdminOnly promoteUser" disabled>Promote</button>
-                <button class="superAdminOnly demoteUser" disabled>Demote</button>
+                <button class="superAdminOnly promoteUser" hidden>Promote</button>
+                <button class="superAdminOnly demoteUser" hidden>Demote</button>
             </div>
             `,
       },
@@ -42,8 +41,17 @@ $(document).ready(function () {
 
   $(".verification").on("click", () => {
     if (userRole === "SuperAdmin") {
-      $(".promoteUser").removeAttr("disabled");
-      $(".demoteUser").removeAttr("disabled");
+      table.rows().every(function () {
+        var rowData = this.data();
+        if(rowData.role === "Admin") {
+          $(this.node()).find(".demoteUser").removeAttr("hidden");
+        } else if(rowData.role === "User") {
+          $(this.node()).find(".promoteUser").removeAttr("hidden");
+        } else if(rowData.role === "SuperAdmin") {
+          $(this.node()).find(".promoteUser").removeAttr("hidden");
+          $(this.node()).find(".promoteUser").attr("disabled", true);
+        }
+      });
     } else {
       console.error("Sorry you are not a super User!");
     }
