@@ -12,7 +12,10 @@
     <body>
         <div class="wrapper" style="margin-bottom: 8px;">
             <h1>Admin Dashboard</h1>
-            <button class="btn verification">SuperAdmin</button>
+            <div class="btnContainer">
+                <button class="btn verification">SuperAdmin</button>
+                <button class="btn" id="editAdmin">Edit Info</button>
+            </div>
         </div>
         <div class="wrapper">
             <table id="usersTable" class="" style="font-size: 12px;">
@@ -37,6 +40,10 @@
                     </tr>
                 </tfoot>
             </table>
+        </div>
+
+        <div class="modalEditing">
+            
         </div>
         <script src="/JS/jquery-3.7.1.js"></script>
         <script src="/JS/datatables.min.js"></script>

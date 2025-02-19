@@ -59,6 +59,11 @@ h1 {
     margin: 5px;
 }
 
+.btnContainer {
+    display: flex;
+    flex-direction: row;
+}
+
 .btn {
     width: 50%;
 }

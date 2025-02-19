@@ -42,10 +42,7 @@ public class AuthController : ControllerBase
             Age = userDTO.Age,
             Role = "User"
         };
-        if (user.Password.Length < 12)
-        {
-            return BadRequest("Password should At least have 12 charectors");
-        }
+        
         user.Password = _passwordService.HashPassword(user, user.Password);
 
         _userContext.Users.Add(user);

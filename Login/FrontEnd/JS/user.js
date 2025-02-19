@@ -34,6 +34,10 @@ $(document).ready(function () {
     });
   });
 
+  $("#WelcomeUser").html(
+    `Dear ${escapeHTML(localStorage.getItem("username"))}!`
+  );
+
   $("#editBtn").click(function (ev) {
     ev.preventDefault();
     if ($("#userPassword").val() === $("#confirmPassword").val()) {
@@ -46,7 +50,9 @@ $(document).ready(function () {
       };
       $.ajax({
         type: "PUT",
-        url: `http://localhost:5224/api/User/EditUser?username=${localStorage.getItem("username")}`,
+        url: `http://localhost:5224/api/User/EditUser?username=${localStorage.getItem(
+          "username"
+        )}`,
         data: JSON.stringify(updatedData),
         contentType: "application/json",
         dataType: "json",
@@ -65,4 +71,7 @@ $(document).ready(function () {
       return;
     }
   });
+  function escapeHTML(text) {
+    return $("<div>").text(text).html(); // Converts special characters to HTML entities
+  }
 });

@@ -50,10 +50,10 @@ $(document).ready(function () {
       success: function (response) {
         if (response.role === "Admin" || response.role === "SuperAdmin") {
           document.location.href = "/HTML/adminDashboard.html";
-          alert(`Wellcome admin ${username}`);
+          alert(`Welcome admin ${username}`);
         } else {
           document.location.href = "/HTML/dashboard.html";
-          alert("Wellcome dear user")
+          alert(`Welcome dear ${username}`);
         }
       },
       error: function () {

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Encodings.Web;
 using Microsoft.EntityFrameworkCore;
 using Models;
 namespace LoginAPI.Controllers;
@@ -46,7 +47,7 @@ public class UserController : ControllerBase
     public async Task<ActionResult<User>> GetUser(string username)
     {
         var user = await _userContext.Users.FirstOrDefaultAsync(u => u.UserName == username);
-
+        user.UserName = HtmlEncoder.Default.Encode(user.UserName);
         if (user == null)
         {
             return NotFound();
