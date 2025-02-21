@@ -1,5 +1,6 @@
 ﻿using Data;
 using Models;
+using LoginAPI.Services.HtmlSanitizerService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using LoginAPI.Services.PasswordService;
 namespace LoginAPI.Controllers.Auth;
 
 [ApiController]
@@ -18,12 +20,14 @@ public class AuthController : ControllerBase
     private readonly IConfiguration _config;
     private readonly PasswordService _passwordService;
     private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly HtmlSanitizerService _sanitizer;
     public AuthController(UserContext context, IConfiguration configuration, IPasswordHasher<User> passwordHasher)
     {
         _userContext = context;
         _config = configuration;
         _passwordHasher = passwordHasher;
         _passwordService = new PasswordService();
+        _sanitizer = new HtmlSanitizerService();
     }
 
     [HttpPost("Register")]

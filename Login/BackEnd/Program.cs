@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Models;
 using Microsoft.OpenApi.Models;
 using System.Text.Json;
+using LoginAPI.Services.HtmlSanitizerService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,9 @@ builder.Services.AddCors(options =>
         }
         );
 });
+
+// Sanitizing the html inputs
+builder.Services.AddScoped<HtmlSanitizerService>();
 
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

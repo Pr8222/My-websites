@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Encodings.Web;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using LoginAPI.Services.PasswordService;
 namespace LoginAPI.Controllers;
 
 [Authorize]

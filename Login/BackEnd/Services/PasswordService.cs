@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Models;
 
-namespace LoginAPI
+namespace LoginAPI.Services.PasswordService
 {
     public class PasswordService
     {
