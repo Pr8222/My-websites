@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
   $("#logoutBtn").click(function (ev) {
     ev.preventDefault();
     // Remove the token from local storage
@@ -15,7 +16,9 @@ $(document).ready(function () {
     ev.preventDefault();
     $.ajax({
       type: "DELETE",
-      url: `http://localhost:5224/api/User/DeleteUser?username=${localStorage.getItem("username")}`,
+      url: `http://localhost:5224/api/User/DeleteUser?username=${localStorage.getItem(
+        "username"
+      )}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
@@ -60,7 +63,7 @@ $(document).ready(function () {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
         success: function (response) {
-          console.log("Account has been edited successfully!");
+          ShowToast("The account has been changed successfly");
           location.reload();
         },
         error: function (xhr, status, error) {
@@ -73,5 +76,31 @@ $(document).ready(function () {
   });
   function escapeHTML(text) {
     return $("<div>").text(text).html(); // Converts special characters to HTML entities
+  }
+  // Creating a pop-up notification function
+  function ShowToast(message, type) {
+    // Create a new toast element dynamically using jQuery
+    var toast = $(
+      '<div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true"></div>'
+    );
+    toast.addClass(`bg-${type}`);
+
+    // Add toast content
+    toast.append(`
+      <div class="toast-body" style="display: flex; justify-content: space-between;" >
+          <p style="color: #FFF; font-size: 14px;">${message}</p>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="color: #FFF"></button>
+      </div>
+  `);
+    // Append the toast to the container
+    $("#toastContainer").append(toast);
+
+    // Create a new Bootstrap toast instance and show it
+    var bootstrapToast = new bootstrap.Toast(toast[0]);
+    bootstrapToast.show();
+    // Optional: Remove toast after 3 seconds
+    setTimeout(function () {
+      toast.remove();
+    }, 5000);
   }
 });
