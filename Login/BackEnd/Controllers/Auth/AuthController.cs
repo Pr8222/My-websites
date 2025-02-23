@@ -18,8 +18,8 @@ public class AuthController : ControllerBase
 {
     private readonly UserContext _userContext;
     private readonly IConfiguration _config;
-    private readonly PasswordService _passwordService;
-    private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly PasswordService _passwordService; // For hashing password
+    private readonly IPasswordHasher<User> _passwordHasher; // For verifying the hashed password
     private readonly HtmlSanitizerService _sanitizer;
     public AuthController(UserContext context, IConfiguration configuration, IPasswordHasher<User> passwordHasher)
     {
@@ -33,26 +33,46 @@ public class AuthController : ControllerBase
     [HttpPost("Register")]
     public async Task<IActionResult> Register([FromBody] UserDTO userDTO)
     {
-        if (_userContext.Users.Any(u => u.UserName == userDTO.UserName))
+        if (!ModelState.IsValid) 
         {
-            return BadRequest("Username already taken.");
+            return BadRequest(ModelState);
         }
-
-        var user = new User
+        try
         {
-            UserName = userDTO.UserName,
-            Email = userDTO.Email,
-            Password = userDTO.Password,
-            Age = userDTO.Age,
-            Role = "User"
-        };
-        
-        user.Password = _passwordService.HashPassword(user, user.Password);
+            // Sanitize user input (prevent XSS)
+            var sanitizer = new HtmlSanitizerService();
+            userDTO.UserName = sanitizer.Sanitize(userDTO.UserName);
+            userDTO.Email = sanitizer.Sanitize(userDTO.Email);
 
-        _userContext.Users.Add(user);
-        await _userContext.SaveChangesAsync();
+            if (_userContext.Users.Any(u => u.UserName == userDTO.UserName))
+            {
+                return BadRequest("Username already taken.");
+            }
 
-        return Ok();
+            var user = new User
+            {
+                UserName = userDTO.UserName,
+                Email = userDTO.Email,
+                Password = userDTO.Password,
+                Age = userDTO.Age,
+                Role = "User"
+            };
+
+            user.Password = _passwordService.HashPassword(user, user.Password);
+            if (user.Password == null)
+            {
+                return StatusCode(500, "Error hashing password.");
+            }
+
+            _userContext.Users.Add(user);
+            await _userContext.SaveChangesAsync();
+
+            return Ok();
+        }
+        catch (Exception ex) 
+        {
+            return StatusCode(500, $"Internal Server Error: {ex.Message}");
+        }
     }
 
     [HttpPost("login")]

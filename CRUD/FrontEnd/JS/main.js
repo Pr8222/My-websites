@@ -62,17 +62,18 @@ $(document).ready(function () {
     var rowData = table.row(row).data();
 
     $("#editId").val(rowData.id);
-    $("#editName").attr("placeholder",rowData.name);
-    $("#editEmail").attr("placeholder",rowData.email);
-    $("#editAge").attr("placeholder",rowData.age);
+    $("#editName").attr("placeholder", rowData.name);
+    $("#editEmail").attr("placeholder", rowData.email);
+    $("#editAge").attr("placeholder", rowData.age);
 
     $("#editModal").modal("show");
 
-    $("#saveEditBtn").off("click").on("click", function () {
-      saveModal(table, rowData);
-    });
+    $("#saveEditBtn")
+      .off("click")
+      .on("click", function () {
+        saveModal(table, rowData);
+      });
   });
-
 
   // All Of The Functions go here!!!!
   // Defining The Add User function
@@ -142,10 +143,9 @@ $(document).ready(function () {
     }
   }
   // Defining the save button function for the modal editing
-  function saveModal(table, rowData){
-
+  function saveModal(table, rowData) {
     // If The password is empty it stops the user to edit the row
-    if("#editPassword" === null){
+    if ("#editPassword" === null) {
       $("#editPassword").addClass("is-invalid");
       showToast("رمزعبور خالی است!", "danger");
       return;
@@ -160,10 +160,8 @@ $(document).ready(function () {
       Name: $("#editName").val(),
       Email: $("#editEmail").val(),
       Password: $("#editPassword").val(),
-      Age: $("#editAge").val()
-    }
-
-
+      Age: $("#editAge").val(),
+    };
 
     $.ajax({
       type: "Put",
@@ -174,16 +172,19 @@ $(document).ready(function () {
       success: function (response) {
         showToast("اطلاعات با موفقیت تغییر یافتند.", "success");
         table.ajax.reload(null, false);
-      }, error: function(xhr, status, error){
+      },
+      error: function (xhr, status, error) {
         showToast("در هنگام ایجاد تغییرات، مشکلی پیش آمد.", "danger");
-      }
+      },
     });
     $("#editModal").modal("hide");
   }
   function showToast(message, type) {
     $("#actionToast .toast-body").text(message);
-    $("#actionToast").removeClass("bg-success bg-danger bg-warning").addClass(`bg-${type}`);
+    $("#actionToast")
+      .removeClass("bg-success bg-danger bg-warning")
+      .addClass(`bg-${type}`);
     let toast = new bootstrap.Toast($("#actionToast"));
     toast.show();
-}
+  }
 });

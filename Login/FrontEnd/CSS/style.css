@@ -131,3 +131,8 @@ body {
 .login-link a:hover {
     text-decoration: underline;
 }
+
+#toastContainer {
+    bottom: 5px;
+    right: 5px;
+}

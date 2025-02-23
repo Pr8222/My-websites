@@ -56,11 +56,11 @@ public class UserController : ControllerBase
 
         return user;
     }
-
+    [AllowAnonymous]
     [HttpDelete("DeleteUser")]
     public async Task<IActionResult> DeleteUser(string username)
     {
-        var user = await _userContext.Users.FirstOrDefaultAsync(u =>  !u.UserName.Equals(username));
+        var user = await _userContext.Users.FirstOrDefaultAsync(u =>  u.UserName.Equals(username));
         if (user == null)
         {
             return NotFound();

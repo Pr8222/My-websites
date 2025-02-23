@@ -1,52 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatibl" content="IE=edge">
-        <meta name="viewport" content="width=device-width,initial-scale=1.0">
-        <title>نت راز</title>
-        <link rel="stylesheet" href="/CSS/datatables.min.css">
-        <link rel="stylesheet" href="/CSS/adminDashboard.css">
-        <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
-    </head>
-    <body>
-        <div class="wrapper" style="margin-bottom: 8px;">
-            <h1>Admin Dashboard</h1>
-            <div class="btnContainer">
-                <button class="btn verification">SuperAdmin</button>
-                <button class="btn" id="editAdmin">Edit Info</button>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatibl" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>نت راز</title>
+    <link rel="stylesheet" href="/CSS/datatables.min.css">
+    <link rel="stylesheet" href="/CSS/adminDashboard.css">
+    <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+</head>
+
+<body>
+    <div class="wrapper" style="margin-bottom: 8px;">
+        <h1>Admin Dashboard</h1>
+        <div class="btnContainer">
+            <button class="btn verification">SuperAdmin</button>
+            <button class="btn" id="editAdmin">Edit Info</button>
+        </div>
+    </div>
+    <div class="wrapper">
+        <table id="usersTable" class="" style="font-size: 12px;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Age</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Age</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="modalEditing">
+
+    </div>
+
+    <div id="toastContainer" class="position-fixed bottom-0 end-5 p-3">
+        <div id="actionToast" class="toast align-items-center text-white bg-success border-0" role="alert"
+            aria-live="polite" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
             </div>
         </div>
-        <div class="wrapper">
-            <table id="usersTable" class="" style="font-size: 12px;">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Age</th>
-                        <th>Role</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>ID</th>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Age</th>
-                        <th>Role</th>
-                        <th>Actions</th>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+    </div>
+    <script src="/JS/jquery-3.7.1.js"></script>
+    <script src="/JS/datatables.min.js"></script>
+    <script src="/JS/admin.js"></script>
+</body>
 
-        <div class="modalEditing">
-            
-        </div>
-        <script src="/JS/jquery-3.7.1.js"></script>
-        <script src="/JS/datatables.min.js"></script>
-        <script src="/JS/admin.js"></script>
-    </body>
 </html>

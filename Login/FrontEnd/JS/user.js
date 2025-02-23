@@ -15,7 +15,7 @@ $(document).ready(function () {
     ev.preventDefault();
     $.ajax({
       type: "DELETE",
-      url: `http://localhost:5224/api/User/DeleteUser?username=${username}`,
+      url: `http://localhost:5224/api/User/DeleteUser?username=${localStorage.getItem("username")}`,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
