@@ -25,7 +25,7 @@ $(document).ready(function () {
         }
       },
       error: function (xhr, status, error) {
-        alert(error);
+        ShowToast("No such user.", "danger");
       },
     });
   });
@@ -58,8 +58,36 @@ $(document).ready(function () {
       },
       error: function () {
         document.location.href = "/HTML/login.html";
-        alert("User not found")
+        ShowToast("User not found", "danger");
       },
     });
+  }
+
+
+  // Creating a pop-up notification function
+  function ShowToast(message, type) {
+    // Create a new toast element dynamically using jQuery
+    var toast = $(
+      '<div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true"></div>'
+    );
+    toast.addClass(`bg-${type}`);
+
+    // Add toast content
+    toast.append(`
+      <div class="toast-body" style="display: flex; justify-content: space-between;" >
+          <p style="color: #FFF; font-size: 14px;">${message}</p>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="color: #FFF"></button>
+      </div>
+  `);
+    // Append the toast to the container
+    $("#toastContainer").append(toast);
+
+    // Create a new Bootstrap toast instance and show it
+    var bootstrapToast = new bootstrap.Toast(toast[0]);
+    bootstrapToast.show();
+    // Optional: Remove toast after 3 seconds
+    setTimeout(function () {
+      toast.remove();
+    }, 5000);
   }
 });

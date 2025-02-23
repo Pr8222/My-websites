@@ -22,19 +22,19 @@ $(document).ready(function () {
         document.location.href = "/HTML/login.html";
       },
       error: function (xhr, status, error) {
-        let responseError = xhr.responseJSON.errors ? xhr.responseJSON.errors : null;
+        let responseError = xhr.responseJSON.errors
+          ? xhr.responseJSON.errors
+          : null;
 
         if (responseError) {
           // Checking if the username error
           if (responseError.UserName) {
             ShowToast(responseError.UserName[0], "danger");
-            console.log(responseError.UserName[0]);
           }
 
           // Checking for the email error
           if (responseError.Email) {
             ShowToast(responseError.Email[0], "danger");
-            console.log(responseError.Email[0]);
           }
 
           // Checinf for the password error
@@ -48,11 +48,28 @@ $(document).ready(function () {
     });
   });
   function ShowToast(message, type) {
-    $("#actionToast .toast-body").text(message);
-    $("#actionToast")
-      .removeClass("bg-success bg-danger bg-warning")
-      .addClass(`bg-${type}`);
-    let toast = new bootstrap.Toast($("#actionToast"));
-    toast.show();
+    // Create a new toast element dynamically using jQuery
+    var toast = $(
+      '<div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true"></div>'
+    );
+    toast.addClass(`bg-${type}`);
+
+    // Add toast content
+    toast.append(`
+      <div class="toast-body" style="display: flex; justify-content: space-between;" >
+          <p style="color: #FFF; font-size: 14px;">${message}</p>
+          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="color: #FFF"></button>
+      </div>
+  `);
+    // Append the toast to the container
+    $("#toastContainer").append(toast);
+
+    // Create a new Bootstrap toast instance and show it
+    var bootstrapToast = new bootstrap.Toast(toast[0]);
+    bootstrapToast.show();
+    // Optional: Remove toast after 3 seconds
+    setTimeout(function () {
+      toast.remove();
+    }, 5000);
   }
 });
