@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
   $("#logoutBtn").click(function (ev) {
     ev.preventDefault();
     // Remove the token from local storage
@@ -43,14 +42,28 @@ $(document).ready(function () {
 
   $("#editBtn").click(function (ev) {
     ev.preventDefault();
-    if ($("#userPassword").val() === $("#confirmPassword").val()) {
+
+    var updatedData = {
+      username: $("#username").val(),
+      email: $("#userEmail").val(),
+      password: $("#userPassword").val(),
+      age: $("#userAge").val(),
+    };
+    $.ajax({
+      type: "GET",
+      url: `http://localhost:5224/api/User/userPage?username=${localStorage.getItem(
+        "username"
+      )}`,
+      success: function (response) {
+        updatedData.username = updatedData.username == null ? updatedData.username : response.userName;
+        updatedData.email = updatedData.email == null ? updatedData.email : response.email;
+
+      },
+    });
+
+    if ($("#userPassword").val() === $("#confirmPassword").val() && false) {
       // Declaring a variable to store the input tags values
-      var updatedData = {
-        username: $("#username").val(),
-        email: $("#userEmail").val(),
-        password: $("#userPassword").val(),
-        age: $("#userAge").val(),
-      };
+      
       $.ajax({
         type: "PUT",
         url: `http://localhost:5224/api/User/EditUser?username=${localStorage.getItem(
