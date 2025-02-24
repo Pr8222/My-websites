@@ -91,7 +91,7 @@ $(document).ready(function () {
             ShowToast("The account has been changed successfully", "success");
           },
           error: function (xhr, status, error) {
-            alert("Unable to edit the user. " + error + xhr);
+            console.log(xhr);
           },
         });
       },

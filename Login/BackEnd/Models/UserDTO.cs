@@ -7,17 +7,14 @@ namespace Models
     public class UserDTO : IValidatableObject
     {
 
-        [Required]
         [StringLength(50, ErrorMessage = "The username is too long!")]
         [RegularExpression(@"^[a-zA-Z0-9_]*$", ErrorMessage = "Invalid username Format!")]
         [Column("username")]
         public string UserName { get; set; }
-        [Required]
         [EmailAddress(ErrorMessage = "Invalid email format!")]
         [Column("email")]
         public string Email { get; set; }
-        [Required]
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "Password must be 6-100 characters!")]
+        
         [Column("password")]
         public string Password { get; set; }
         [Column("age")]

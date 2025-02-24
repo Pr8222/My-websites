@@ -81,12 +81,23 @@ public class UserController : ControllerBase
             return BadRequest("User not found.");
         }
 
-        // Update the existing user object instead of creating a new one
-        user.UserName = userDTO.UserName;
-        user.Email = userDTO.Email;
-        user.Password = _passwordService.HashPassword(user, userDTO.Password);
-        user.Age = userDTO.Age;
-
+        // Update the user
+        // Update the username if the username is null
+        if (!string.IsNullOrEmpty(userDTO.UserName))
+        {
+            user.UserName = userDTO.UserName;
+        }
+        // Update the email if the email is null
+        if (!string.IsNullOrEmpty(userDTO.Email))
+        {
+            user.Email = userDTO.Email;
+        }
+        // Update the password if the password is null
+        if (!string.IsNullOrEmpty(userDTO.Password))
+        {
+            user.Password = _passwordService.HashPassword(user, userDTO.Password);
+        }
+        
         _userContext.Entry(user).State = EntityState.Modified;
 
         try
