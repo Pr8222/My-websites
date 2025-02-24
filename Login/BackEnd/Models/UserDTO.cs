@@ -6,7 +6,7 @@ namespace Models
     [Table("userDTO")]
     public class UserDTO : IValidatableObject
     {
-
+        [Required]
         [StringLength(50, ErrorMessage = "The username is too long!")]
         [RegularExpression(@"^[a-zA-Z0-9_]*$", ErrorMessage = "Invalid username Format!")]
         [Column("username")]

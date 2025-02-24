@@ -73,6 +73,9 @@ $(document).ready(function () {
         Object.keys(updatedData).forEach((key) => {
           if (!updatedData[key]) delete updatedData[key];
         });
+
+        console.log(updatedData);
+        debugger;
         // Now, send the PUT request
         $.ajax({
           type: "PUT",
