@@ -86,16 +86,25 @@ public class UserController : ControllerBase
         if (!string.IsNullOrEmpty(userDTO.UserName))
         {
             user.UserName = userDTO.UserName;
+        } else
+        {
+            user.Email = user.Email;
         }
         // Update the email if the email is null
         if (!string.IsNullOrEmpty(userDTO.Email))
         {
             user.Email = userDTO.Email;
+        } else
+        {
+            user.Email = user.Email;
         }
         // Update the password if the password is null
         if (!string.IsNullOrEmpty(userDTO.Password))
         {
             user.Password = _passwordService.HashPassword(user, userDTO.Password);
+        } else
+        {
+            user.Password = user.Password;
         }
         
         _userContext.Entry(user).State = EntityState.Modified;
