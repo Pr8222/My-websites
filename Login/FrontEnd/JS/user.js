@@ -46,37 +46,36 @@ $(document).ready(function () {
     var updatedData = {
       username: $("#username").val().trim(),
       email: $("#userEmail").val().trim(),
-      password: $("#userPassword").val().trim(),
       age: $("#userAge").val().trim(),
+      password: $("#userPassword").val().trim()
     };
 
+    // Check if passwords match before proceeding
     if ($("#userPassword").val() !== $("#confirmPassword").val()) {
       alert("Passwords do not match!");
       return;
     }
 
+    // Send GET request to get current user data
     $.ajax({
       type: "GET",
       url: `http://localhost:5224/api/User/userPage?username=${localStorage.getItem(
         "username"
       )}`,
       success: function (response) {
+        // Fallback to the existing values from the GET response if the user entered nothing
         updatedData.username = updatedData.username || response.userName;
         updatedData.email = updatedData.email || response.email;
         updatedData.age = updatedData.age || response.age;
 
-        if ($("#userPassword").val().trim() === "") {
-          delete updatedData.password; // Prevent sending the hashed password back
-        }
+        // If the password is provided, include it in updatedData, else set it to an empty string
+        updatedData.password =
+          $("#userPassword").val().trim() == null
+            ? ""
+            : $("#userPassword").val().trim();
 
-        // Remove empty fields
-        Object.keys(updatedData).forEach((key) => {
-          if (!updatedData[key]) delete updatedData[key];
-        });
 
-        console.log(updatedData);
-        debugger;
-        // Now, send the PUT request
+        // Send the PUT request to update user data
         $.ajax({
           type: "PUT",
           url: `http://localhost:5224/api/User/EditUser?username=${localStorage.getItem(
@@ -94,7 +93,7 @@ $(document).ready(function () {
             ShowToast("The account has been changed successfully", "success");
           },
           error: function (xhr, status, error) {
-            console.log(xhr);
+            console.log(xhr, error);
           },
         });
       },
