@@ -44,48 +44,64 @@ $(document).ready(function () {
     ev.preventDefault();
 
     var updatedData = {
-      username: $("#username").val(),
-      email: $("#userEmail").val(),
-      password: $("#userPassword").val(),
-      age: $("#userAge").val(),
+      username: $("#username").val().trim(),
+      email: $("#userEmail").val().trim(),
+      password: $("#userPassword").val().trim(),
+      age: $("#userAge").val().trim(),
     };
+
+    if ($("#userPassword").val() !== $("#confirmPassword").val()) {
+      alert("Passwords do not match!");
+      return;
+    }
+
     $.ajax({
       type: "GET",
       url: `http://localhost:5224/api/User/userPage?username=${localStorage.getItem(
         "username"
       )}`,
       success: function (response) {
-        updatedData.username = updatedData.username == null ? updatedData.username : response.userName;
-        updatedData.email = updatedData.email == null ? updatedData.email : response.email;
+        updatedData.username = updatedData.username || response.userName;
+        updatedData.email = updatedData.email || response.email;
+        updatedData.age = updatedData.age || response.age;
 
+        if ($("#userPassword").val().trim() === "") {
+          delete updatedData.password; // Prevent sending the hashed password back
+        }
+
+        // Remove empty fields
+        Object.keys(updatedData).forEach((key) => {
+          if (!updatedData[key]) delete updatedData[key];
+        });
+
+        console.log(updatedData);
+        debugger;
+        // Now, send the PUT request
+        $.ajax({
+          type: "PUT",
+          url: `http://localhost:5224/api/User/EditUser?username=${localStorage.getItem(
+            "username"
+          )}`,
+          data: JSON.stringify(updatedData),
+          contentType: "application/json",
+          dataType: "json",
+          headers: {
+            Authorization: "Bearer " + localStorage.getItem("token"),
+          },
+          success: function (response) {
+            localStorage.setItem("username", updatedData.username);
+            location.reload();
+            ShowToast("The account has been changed successfully", "success");
+          },
+          error: function (xhr, status, error) {
+            alert("Unable to edit the user. " + error + xhr);
+          },
+        });
+      },
+      error: function (xhr, status, error) {
+        console.log(error);
       },
     });
-
-    if ($("#userPassword").val() === $("#confirmPassword").val() && false) {
-      // Declaring a variable to store the input tags values
-      
-      $.ajax({
-        type: "PUT",
-        url: `http://localhost:5224/api/User/EditUser?username=${localStorage.getItem(
-          "username"
-        )}`,
-        data: JSON.stringify(updatedData),
-        contentType: "application/json",
-        dataType: "json",
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
-        success: function (response) {
-          ShowToast("The account has been changed successfly");
-          location.reload();
-        },
-        error: function (xhr, status, error) {
-          console.log("Unable to edit the user. " + error + xhr);
-        },
-      });
-    } else {
-      return;
-    }
   });
   function escapeHTML(text) {
     return $("<div>").text(text).html(); // Converts special characters to HTML entities
