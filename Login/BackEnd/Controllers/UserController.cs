@@ -139,7 +139,15 @@ public class UserController : ControllerBase
             return NotFound("There's no such user with that username");
         }
 
-        user.Role = "Admin";
+        // Find the "Admin" role in the Roles table
+        var adminRole = await _userContext.Roles.FirstOrDefaultAsync(r => r.Name == "Admin");
+        if (adminRole == null)
+        {
+            return BadRequest("Admin role not found");
+        }
+
+        // Assign the RoleId instead of Role
+        user.RoleId = adminRole.Id;
         await _userContext.SaveChangesAsync();
 
         return Ok(new {Message  = "User Promoted to admin!"});
@@ -156,12 +164,26 @@ public class UserController : ControllerBase
         {
             return NotFound("There's no such user with that username");
         }
-        if(admin.Role != "Admin")
+        var adminRole = await _userContext.Roles.FirstOrDefaultAsync(r => r.Name == "Admin");
+        // Check if there is a role named "Admin"
+        if (adminRole == null)
+        {
+            return BadRequest("Admin role not found");
+        }
+        // Check if the user is an admin
+        if (admin.RoleId != adminRole.Id)
         {
             return NotFound("The user is not admin!");
         }
 
-        admin.Role = "User";
+        var userRole = await _userContext.Roles.FirstOrDefaultAsync(r => r.Name == "User");
+        //Check if there is a role named "User"
+        if(userRole == null)
+        {
+            return BadRequest("User role not found");
+        }
+
+        admin.RoleId = userRole.Id;
         await _userContext.SaveChangesAsync();
 
         return Ok(new { Message = "Admin has been demoted!" });

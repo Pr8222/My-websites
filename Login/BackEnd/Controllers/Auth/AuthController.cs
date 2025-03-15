@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using LoginAPI.Services.PasswordService;
+using System.Threading.Tasks;
 namespace LoginAPI.Controllers.Auth;
 
 [ApiController]
@@ -49,13 +50,19 @@ public class AuthController : ControllerBase
                 return BadRequest("Username already taken.");
             }
 
+            var userRole = await _userContext.Roles.FirstOrDefaultAsync(r => r.Name == "User");
+            if (userRole == null)
+            {
+                return StatusCode(500, "User role not found.");
+            }
+
             var user = new User
             {
                 UserName = userDTO.UserName,
                 Email = userDTO.Email,
                 Password = userDTO.Password,
                 Age = userDTO.Age,
-                Role = "User"
+                RoleId = userRole.Id
             };
 
             user.Password = _passwordService.HashPassword(user, user.Password);
@@ -76,20 +83,45 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] Login login)
+    public async Task<IActionResult> Login([FromBody] Login login)
     {
-        var user = _userContext.Users.FirstOrDefault(u => u.UserName == login.UserName);
-        if (user == null) 
+        try
         {
-            return Unauthorized("Invalid username or password.");
+            // Find the user by username
+            var user = await _userContext.Users
+                .FirstOrDefaultAsync(u => u.UserName == login.UserName);
+
+            // Check if user exists
+            if (user == null)
+            {
+                return Unauthorized("Invalid username or password.");
+            }
+
+            // Find the role associated with the user
+            var userRole = await _userContext.Roles
+                .FirstOrDefaultAsync(r => r.Id == user.RoleId);
+
+            if (userRole == null)
+            {
+                return StatusCode(500, "User role not found.");
+            }
+
+            // Verify the password (compare the stored hash with the provided password)
+            var result = _passwordHasher.VerifyHashedPassword(user, user.Password, login.Password);
+
+            if (result == PasswordVerificationResult.Success)
+            {
+                // Generate JWT token
+                var token = GenerateJwtToken(user.UserName, userRole.Name);
+                return Ok(new { Token = token });
+            }
+
+            return Unauthorized("Invalid credentials.");
         }
-        var result = _passwordHasher.VerifyHashedPassword(user, user.Password, login.Password);
-        if (result == PasswordVerificationResult.Success)
+        catch (Exception ex)
         {
-            var token = GenerateJwtToken(user.UserName, user.Role);
-            return Ok(new { Token = token });
+            return StatusCode(500, $"Internal server error: {ex.Message}");
         }
-        return Unauthorized("Invalid credentials.");
     }
 
     private string GenerateJwtToken(string username, string role)
