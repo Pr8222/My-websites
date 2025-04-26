@@ -7,8 +7,8 @@ namespace Models
     [Table("user")]
     public class User : IValidatableObject
     {
-
-        [Column("user_id"), Key]
+        [Key]
+        [Column("user_id")]
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
         [StringLength(50, ErrorMessage = "The username is too long!")]
@@ -30,7 +30,7 @@ namespace Models
 
         [Column("role_id")]
         public int RoleId { get; set; }
-        public Role Role { get; set; }
+        public ICollection<Role> Roles { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             // Define invalid Swagger example values
@@ -47,11 +47,55 @@ namespace Models
             }
         }
     }
-
     public class Role
     {
         public int Id { get; set; }
+        public string RoleName { get; set; }
+        public string RoleDesc { get; set; }
 
-        public string Name { get; set; }
+        public ICollection<User> Users { get; set; }
+        public ICollection<RoleKeys> RoleKeys { get; set; }
     }
+
+    public class RoleUser
+    {
+        public int Id { get; set; }
+        public string UserId { get; set; }
+        public User User { get; set; }
+        public int RoleId { get; set; }
+        public Role Role { get; set; }
+    }
+
+    public class RoleKeys
+    {
+        public int Id { get; set; }
+        public int RoleId { get; set; }
+        public Role Role { get; set; }
+        public int KeyId { get; set; }
+        public Key Key { get; set; }
+    }
+
+    public class Key
+    {
+        public int Id { get; set; }
+        public string KeyName { get; set; }
+        public string FriendlyKeyName { get; set; }
+
+        public ICollection<RoleKeys> RoleKeys { get; set; }
+        public ICollection<UserExtraKeys> UserKeys { get; set; }
+    }
+
+    public class UserExtraKeys
+    {
+        public int Id { get; set; }
+        public string UserId { get; set; }
+        public User User { get; set; }
+        public int KeyId { get; set; }
+        public Key Key { get; set; }
+
+        public string? KeyValue { get; set; } // This is the value of the key for the user
+        public DateTime? ExpirationDate { get; set; } // This is the expiration date of the key for the user
+    }
+
+
 }

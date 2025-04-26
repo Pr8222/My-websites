@@ -3,3 +3,6 @@ CRUD/FrontEnd/package-lock.json
 /CRUD/BackEnd/appsettings.json
 /Login/BackEnd/LoginAPI/appsettings.json
 Login/FrontEnd/package-lock.json
+Datatables/response.json
+Datatables/package-lock.json
+Datatables/node_modules/.package-lock.json

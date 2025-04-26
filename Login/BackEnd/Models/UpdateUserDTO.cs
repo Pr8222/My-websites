@@ -8,15 +8,15 @@ namespace Models
     [Table("UpdateUserDTO")]
     public class UpdateUserDTO
     {
-        
+
         [Column("username")]
         public string UserName { get; set; }
 
-       
+
         [Column("email")]
         public string Email { get; set; }
 
-        
+
         [Column("password")]
         public string Password { get; set; }
 

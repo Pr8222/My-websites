@@ -31,7 +31,7 @@ public class UserController : ControllerBase
             u.UserName,
             u.Email,
             u.Age,
-            u.Role
+            u.RoleId
         }).ToList();
 
         return Ok(new
@@ -60,7 +60,7 @@ public class UserController : ControllerBase
     [HttpDelete("DeleteUser")]
     public async Task<IActionResult> DeleteUser(string username)
     {
-        var user = await _userContext.Users.FirstOrDefaultAsync(u =>  u.UserName.Equals(username));
+        var user = await _userContext.Users.FirstOrDefaultAsync(u => u.UserName.Equals(username));
         if (user == null)
         {
             return NotFound();
@@ -86,7 +86,8 @@ public class UserController : ControllerBase
         if (!string.IsNullOrEmpty(userDTO.UserName))
         {
             user.UserName = userDTO.UserName;
-        } else
+        }
+        else
         {
             user.Email = user.Email;
         }
@@ -94,7 +95,8 @@ public class UserController : ControllerBase
         if (!string.IsNullOrEmpty(userDTO.Email))
         {
             user.Email = userDTO.Email;
-        } else
+        }
+        else
         {
             user.Email = user.Email;
         }
@@ -102,11 +104,12 @@ public class UserController : ControllerBase
         if (!string.IsNullOrEmpty(userDTO.Password))
         {
             user.Password = _passwordService.HashPassword(user, userDTO.Password);
-        } else
+        }
+        else
         {
             user.Password = user.Password;
         }
-        
+
         _userContext.Entry(user).State = EntityState.Modified;
 
         try
@@ -140,7 +143,7 @@ public class UserController : ControllerBase
         }
 
         // Find the "Admin" role in the Roles table
-        var adminRole = await _userContext.Roles.FirstOrDefaultAsync(r => r.Name == "Admin");
+        var adminRole = await _userContext.Roles.FirstOrDefaultAsync(r => r.RoleName == "Admin");
         if (adminRole == null)
         {
             return BadRequest("Admin role not found");
@@ -150,21 +153,21 @@ public class UserController : ControllerBase
         user.RoleId = adminRole.Id;
         await _userContext.SaveChangesAsync();
 
-        return Ok(new {Message  = "User Promoted to admin!"});
+        return Ok(new { Message = "User Promoted to admin!" });
     }
 
     // Super Admin Demotes An Admin To A Regular User
     [Authorize(Roles = "SuperAdmin")]
     [HttpPut("Demote")]
-    public async Task<IActionResult> Demote(string username) 
+    public async Task<IActionResult> Demote(string username)
     {
         var admin = _userContext.Users.FirstOrDefault(a => a.UserName.Equals(username));
 
-        if(admin == null)
+        if (admin == null)
         {
             return NotFound("There's no such user with that username");
         }
-        var adminRole = await _userContext.Roles.FirstOrDefaultAsync(r => r.Name == "Admin");
+        var adminRole = await _userContext.Roles.FirstOrDefaultAsync(r => r.RoleName == "Admin");
         // Check if there is a role named "Admin"
         if (adminRole == null)
         {
@@ -176,9 +179,9 @@ public class UserController : ControllerBase
             return NotFound("The user is not admin!");
         }
 
-        var userRole = await _userContext.Roles.FirstOrDefaultAsync(r => r.Name == "User");
+        var userRole = await _userContext.Roles.FirstOrDefaultAsync(r => r.RoleName == "User");
         //Check if there is a role named "User"
-        if(userRole == null)
+        if (userRole == null)
         {
             return BadRequest("User role not found");
         }
