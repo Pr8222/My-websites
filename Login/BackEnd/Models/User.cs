@@ -30,7 +30,8 @@ namespace Models
 
         [Column("role_id")]
         public int RoleId { get; set; }
-        public ICollection<Role> Roles { get; set; }
+        public ICollection<RoleUser> RoleUsers { get; set; }
+        public ICollection<UserExtraKeys> UserExtraKeys { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             // Define invalid Swagger example values
@@ -53,7 +54,7 @@ namespace Models
         public string RoleName { get; set; }
         public string RoleDesc { get; set; }
 
-        public ICollection<User> Users { get; set; }
+        public ICollection<RoleUser> RoleUsers { get; set; }
         public ICollection<RoleKeys> RoleKeys { get; set; }
     }
 

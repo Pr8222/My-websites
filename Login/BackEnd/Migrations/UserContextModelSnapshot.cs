@@ -89,22 +89,16 @@ namespace LoginAPI.Migrations
 
             modelBuilder.Entity("Models.RoleUser", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
-                    b.HasIndex("RoleId");
+                    b.HasKey("RoleId", "UserId");
 
                     b.HasIndex("UserId");
 
@@ -177,21 +171,6 @@ namespace LoginAPI.Migrations
                     b.ToTable("UserExtraKeys");
                 });
 
-            modelBuilder.Entity("RoleUser", b =>
-                {
-                    b.Property<int>("RolesId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UsersId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("RolesId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("RoleUser");
-                });
-
             modelBuilder.Entity("Models.RoleKeys", b =>
                 {
                     b.HasOne("Models.Key", "Key")
@@ -214,13 +193,13 @@ namespace LoginAPI.Migrations
             modelBuilder.Entity("Models.RoleUser", b =>
                 {
                     b.HasOne("Models.Role", "Role")
-                        .WithMany()
+                        .WithMany("RoleUsers")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Models.User", "User")
-                        .WithMany()
+                        .WithMany("RoleUsers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -239,7 +218,7 @@ namespace LoginAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("Models.User", "User")
-                        .WithMany()
+                        .WithMany("UserExtraKeys")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -247,21 +226,6 @@ namespace LoginAPI.Migrations
                     b.Navigation("Key");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("RoleUser", b =>
-                {
-                    b.HasOne("Models.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RolesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Models.Key", b =>
@@ -274,6 +238,15 @@ namespace LoginAPI.Migrations
             modelBuilder.Entity("Models.Role", b =>
                 {
                     b.Navigation("RoleKeys");
+
+                    b.Navigation("RoleUsers");
+                });
+
+            modelBuilder.Entity("Models.User", b =>
+                {
+                    b.Navigation("RoleUsers");
+
+                    b.Navigation("UserExtraKeys");
                 });
 #pragma warning restore 612, 618
         }
