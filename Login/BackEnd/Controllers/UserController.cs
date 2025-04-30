@@ -149,7 +149,16 @@ public class UserController : ControllerBase
             return BadRequest("Admin role not found");
         }
 
-        // Assign the RoleId instead of Role
+        var existingRoleLinks = _userContext.RoleUsers.Where(ru => ru.UserId == user.Id);
+        _userContext.RoleUsers.RemoveRange(existingRoleLinks);
+
+        // Assign new role user
+        _userContext.RoleUsers.Add(new RoleUser
+        {
+            UserId = user.Id,
+            RoleId = adminRole.Id
+        });
+
         user.RoleId = adminRole.Id;
         await _userContext.SaveChangesAsync();
 
@@ -185,6 +194,17 @@ public class UserController : ControllerBase
         {
             return BadRequest("User role not found");
         }
+
+        // Removing Existing RoleUser
+        var existingRoleLinks = _userContext.RoleUsers.Where(ru => ru.UserId == admin.Id);
+        _userContext.RoleUsers.RemoveRange(existingRoleLinks);
+
+        // Assining new role to the demoted admin
+        _userContext.RoleUsers.Add(new RoleUser
+        {
+            UserId = admin.Id,
+            RoleId = adminRole.Id
+        });
 
         admin.RoleId = userRole.Id;
         await _userContext.SaveChangesAsync();

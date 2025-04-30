@@ -1,85 +1,161 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Data;
+using Models;
+using LoginAPI.Services.HtmlSanitizerService;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using LoginAPI.Services.PasswordService;
+using System.Threading.Tasks;
+namespace LoginAPI.Controllers.Auth;
 
-#nullable disable
+[ApiController]
+[Route("api/[controller]")]
 
-namespace LoginAPI.Migrations
+public class AuthController : ControllerBase
 {
-    /// <inheritdoc />
-    public partial class UserAccessMigration : Migration
+    private readonly UserContext _userContext;
+    private readonly IConfiguration _config;
+    private readonly PasswordService _passwordService; // For hashing password
+    private readonly IPasswordHasher<User> _passwordHasher; // For verifying the hashed password
+    private readonly HtmlSanitizerService _sanitizer;
+    public AuthController(UserContext context, IConfiguration configuration, IPasswordHasher<User> passwordHasher)
     {
-        /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
+        _userContext = context;
+        _config = configuration;
+        _passwordHasher = passwordHasher;
+        _passwordService = new PasswordService();
+        _sanitizer = new HtmlSanitizerService();
+    }
+
+    [HttpPost("Register")]
+    public async Task<IActionResult> Register([FromBody] UserDTO userDTO)
+    {
+        if (!ModelState.IsValid)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_UserExtraKeys_user_UserId1",
-                table: "UserExtraKeys");
-
-            migrationBuilder.DropIndex(
-                name: "IX_UserExtraKeys_UserId1",
-                table: "UserExtraKeys");
-
-            migrationBuilder.DropColumn(
-                name: "UserId1",
-                table: "UserExtraKeys");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "UserId",
-                table: "UserExtraKeys",
-                type: "nvarchar(450)",
-                nullable: false,
-                oldClrType: typeof(int),
-                oldType: "int");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserExtraKeys_UserId",
-                table: "UserExtraKeys",
-                column: "UserId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_UserExtraKeys_user_UserId",
-                table: "UserExtraKeys",
-                column: "UserId",
-                principalTable: "user",
-                principalColumn: "user_id",
-                onDelete: ReferentialAction.Cascade);
+            return BadRequest(ModelState);
         }
-
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
+        try
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_UserExtraKeys_user_UserId",
-                table: "UserExtraKeys");
+            // Sanitize user input (prevent XSS)
+            var sanitizer = new HtmlSanitizerService();
+            userDTO.UserName = sanitizer.Sanitize(userDTO.UserName);
+            userDTO.Email = sanitizer.Sanitize(userDTO.Email);
 
-            migrationBuilder.DropIndex(
-                name: "IX_UserExtraKeys_UserId",
-                table: "UserExtraKeys");
+            if (_userContext.Users.Any(u => u.UserName == userDTO.UserName))
+            {
+                return BadRequest("Username already taken.");
+            }
 
-            migrationBuilder.AlterColumn<int>(
-                name: "UserId",
-                table: "UserExtraKeys",
-                type: "int",
-                nullable: false,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(450)");
+            var userRole = await _userContext.Roles.FirstOrDefaultAsync(r => r.RoleName == "User");
+            if (userRole == null)
+            {
+                return StatusCode(500, "User role not found.");
+            }
 
-            migrationBuilder.AddColumn<string>(
-                name: "UserId1",
-                table: "UserExtraKeys",
-                type: "nvarchar(450)",
-                nullable: true);
+            var user = new User
+            {
+                UserName = userDTO.UserName,
+                Email = userDTO.Email,
+                Password = userDTO.Password,
+                Age = userDTO.Age,
+                RoleId = userRole.Id
+            };
 
-            migrationBuilder.CreateIndex(
-                name: "IX_UserExtraKeys_UserId1",
-                table: "UserExtraKeys",
-                column: "UserId1");
+            user.Password = _passwordService.HashPassword(user, user.Password);
+            if (user.Password == null)
+            {
+                return StatusCode(500, "Error hashing password.");
+            }
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_UserExtraKeys_user_UserId1",
-                table: "UserExtraKeys",
-                column: "UserId1",
-                principalTable: "user",
-                principalColumn: "user_id");
+            _userContext.Users.Add(user);
+            await _userContext.SaveChangesAsync();
+
+            // Updating RoleUsers table
+            _userContext.RoleUsers.Add(new RoleUser
+            {
+                UserId = user.Id,
+                RoleId = userRole.Id
+            });
+            await _userContext.SaveChangesAsync();
+            return Ok(new {message = "User registered successfully."});
         }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal Server Error: {ex.Message}");
+        }
+    }
+
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] Login login)
+    {
+        try
+        {
+            // Find the user by username
+            var user = await _userContext.Users
+                .FirstOrDefaultAsync(u => u.UserName == login.UserName);
+
+            // Check if user exists
+            if (user == null)
+            {
+                return Unauthorized("Invalid username or password.");
+            }
+
+            // Find the role associated with the user
+            var userRoleIds = await _userContext.RoleUsers
+                .Where(ru => ru.UserId == user.Id)
+                .Select(ru => ru.RoleId)
+                .ToListAsync();
+            var userRoles = await _userContext.Roles
+                .Where(r => userRoleIds.Contains(r.Id))
+                .ToListAsync();
+
+            if (!userRoles.Any())
+            {
+                return StatusCode(500, "User role not found.");
+            }
+
+            // Verify the password (compare the stored hash with the provided password)
+            var result = _passwordHasher.VerifyHashedPassword(user, user.Password, login.Password);
+
+            if (result == PasswordVerificationResult.Success)
+            {
+                // Generate JWT token
+                var token = GenerateJwtToken(user.UserName, userRoles.First().RoleName);
+                return Ok(new { Token = token });
+            }
+
+            return Unauthorized("Invalid credentials.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Internal server error: {ex.Message}");
+        }
+    }
+
+    private string GenerateJwtToken(string username, string role)
+    {
+        var jwtSettings = _config.GetSection("JwtSettings");
+        var secretKey = Encoding.ASCII.GetBytes(jwtSettings["Secret"]);
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Role, role)
+            }),
+            Expires = DateTime.UtcNow.AddHours(1),
+
+            Issuer = jwtSettings["Issuer"],
+            Audience = jwtSettings["Audience"],
+
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature)
+        };
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+        return tokenHandler.WriteToken(token);
     }
 }

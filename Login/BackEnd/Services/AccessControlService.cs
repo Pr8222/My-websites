@@ -28,4 +28,5 @@ namespace LoginAPI.Services
             return await roleKeyQuery.AnyAsync() || await userKeyQuery.AnyAsync();
         }
     }
+}
 
