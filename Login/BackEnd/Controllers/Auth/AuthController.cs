@@ -10,6 +10,8 @@ using System.Security.Claims;
 using System.Text;
 using LoginAPI.Services.PasswordService;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+
 namespace LoginAPI.Controllers.Auth;
 
 [ApiController]
@@ -108,11 +110,28 @@ public class AuthController : ControllerBase
                 .Where(ru => ru.UserId == user.Id)
                 .Select(ru => ru.RoleId)
                 .ToListAsync();
-            var userRoles = await _userContext.Roles
+            var userRole = await _userContext.Roles
                 .Where(r => userRoleIds.Contains(r.Id))
                 .ToListAsync();
 
-            if (!userRoles.Any())
+            // Finding the Keys that a user can have
+            var allKeys = await _userContext.Keys.Select(k => k.KeyName).ToListAsync();
+
+            var accessibleKeys = await (
+                from ru in _userContext.RoleUsers
+                where ru.UserId == user.Id
+                join rk in _userContext.RoleKeys on ru.RoleId equals rk.RoleId
+                join k in _userContext.Keys on rk.KeyId equals k.Id
+                select k.KeyName
+                ).Distinct().ToListAsync();
+
+            // Creating the variable to store the keys that the user can have to generate the JWT token
+            var accessibleKeyList = allKeys.ToDictionary(
+                key => key,
+                key => accessibleKeys.Contains(key) 
+                );
+
+            if (!userRole.Any())
             {
                 return StatusCode(500, "User role not found.");
             }
@@ -123,7 +142,7 @@ public class AuthController : ControllerBase
             if (result == PasswordVerificationResult.Success)
             {
                 // Generate JWT token
-                var token = GenerateJwtToken(user.UserName, userRoles.First().RoleName);
+                var token = GenerateJwtToken(user.UserName, userRole.First().RoleName, accessibleKeyList);
                 return Ok(new { Token = token });
             }
 
@@ -135,7 +154,7 @@ public class AuthController : ControllerBase
         }
     }
 
-    private string GenerateJwtToken(string username, string role)
+    private string GenerateJwtToken(string username, string role, Dictionary<string, bool> keys)
     {
         var jwtSettings = _config.GetSection("JwtSettings");
         var secretKey = Encoding.ASCII.GetBytes(jwtSettings["Secret"]);
@@ -145,7 +164,8 @@ public class AuthController : ControllerBase
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.Role, role)
+                new Claim(ClaimTypes.Role, role),
+                new Claim("Keys", JsonConvert.SerializeObject(keys))
             }),
             Expires = DateTime.UtcNow.AddHours(1),
 
