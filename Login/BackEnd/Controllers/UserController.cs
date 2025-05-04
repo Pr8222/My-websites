@@ -31,7 +31,10 @@ public class UserController : ControllerBase
             u.UserName,
             u.Email,
             u.Age,
-            u.RoleId
+            Role = _userContext.RoleUsers
+                .Where(ru => ru.UserId == u.Id)
+                .Select(ru => _userContext.Roles.FirstOrDefault(r => r.Id == ru.RoleId).RoleName)
+                .FirstOrDefault()
         }).ToList();
 
         return Ok(new
@@ -159,7 +162,6 @@ public class UserController : ControllerBase
             RoleId = adminRole.Id
         });
 
-        user.RoleId = adminRole.Id;
         await _userContext.SaveChangesAsync();
 
         return Ok(new { Message = "User Promoted to admin!" });
@@ -182,8 +184,9 @@ public class UserController : ControllerBase
         {
             return BadRequest("Admin role not found");
         }
+        var junctionRole = await _userContext.RoleUsers.Where(ru => ru.UserId == admin.Id).FirstOrDefaultAsync();
         // Check if the user is an admin
-        if (admin.RoleId != adminRole.Id)
+        if (junctionRole.RoleId != adminRole.Id)
         {
             return NotFound("The user is not admin!");
         }
@@ -206,7 +209,6 @@ public class UserController : ControllerBase
             RoleId = adminRole.Id
         });
 
-        admin.RoleId = userRole.Id;
         await _userContext.SaveChangesAsync();
 
         return Ok(new { Message = "Admin has been demoted!" });

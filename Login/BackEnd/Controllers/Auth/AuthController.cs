@@ -61,8 +61,7 @@ public class AuthController : ControllerBase
                 UserName = userDTO.UserName,
                 Email = userDTO.Email,
                 Password = userDTO.Password,
-                Age = userDTO.Age,
-                RoleId = userRole.Id
+                Age = userDTO.Age
             };
 
             user.Password = _passwordService.HashPassword(user, user.Password);

@@ -28,8 +28,6 @@ namespace Models
         [Column("age")]
         public int Age { get; set; }
 
-        [Column("role_id")]
-        public int RoleId { get; set; }
         public ICollection<RoleUser> RoleUsers { get; set; }
         public ICollection<UserExtraKeys> UserExtraKeys { get; set; }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -60,7 +58,6 @@ namespace Models
 
     public class RoleUser
     {
-        public int Id { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
         public int RoleId { get; set; }
@@ -69,7 +66,6 @@ namespace Models
 
     public class RoleKeys
     {
-        public int Id { get; set; }
         public int RoleId { get; set; }
         public Role Role { get; set; }
         public int KeyId { get; set; }

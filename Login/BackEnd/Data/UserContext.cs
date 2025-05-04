@@ -32,6 +32,9 @@ namespace Data
                 .HasForeignKey(ru => ru.UserId);
 
             modelBuilder.Entity<RoleKeys>()
+                .HasKey(rk => new { rk.RoleId, rk.KeyId });
+
+            modelBuilder.Entity<RoleKeys>()
                 .HasOne(rk => rk.Role)
                 .WithMany(r => r.RoleKeys)
                 .HasForeignKey(rk => rk.RoleId);
