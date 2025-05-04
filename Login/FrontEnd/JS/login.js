@@ -20,7 +20,7 @@ $(document).ready(function () {
         if (token) {
           localStorage.setItem("username", userData.username);
           localStorage.setItem("token", token);
-          localStorage.setItem("role", jsonToken.role)
+          localStorage.setItem("role", jsonToken.role);
           CheckUserRole(userData.username);
         }
       },
@@ -48,7 +48,7 @@ $(document).ready(function () {
       type: "Get",
       url: `http://localhost:5224/api/User/userPage?username=${username}`,
       success: function (response) {
-        if (response.role === "Admin" || response.role === "SuperAdmin") {
+        if (response.role == "Admin" || response.role == "SuperAdmin") {
           document.location.href = "/HTML/adminDashboard.html";
           alert(`Welcome admin ${username}`);
         } else {
