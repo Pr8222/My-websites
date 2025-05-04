@@ -213,10 +213,20 @@ public class UserController : ControllerBase
 
         return Ok(new { Message = "Admin has been demoted!" });
     }
-
+    // This function checks if the user exists
     private async Task<bool> UserExists(string username)
     {
         return await _userContext.Users.AnyAsync(e => e.UserName == username);
+    }
+    // This function checks for the keys that a user has
+    private async Task<bool> UserHasAccess(string userId, string keyName)
+    {
+        var hasAccess = await _userContext.RoleUsers
+            .Where(ru => ru.UserId == userId)
+            .SelectMany(ru => _userContext.RoleKeys.Where(rk => rk.RoleId == ru.RoleId))
+            .AnyAsync(rk => _userContext.Keys.Any(k => k.Id == rk.KeyId && k.KeyName == keyName));
+
+        return hasAccess;
     }
 }
 
