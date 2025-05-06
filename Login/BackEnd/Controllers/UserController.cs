@@ -6,6 +6,9 @@ using System.Text.Encodings.Web;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using LoginAPI.Services.PasswordService;
+using System.Security.Claims;
+using Newtonsoft.Json;
+
 namespace LoginAPI.Controllers;
 
 [Authorize]
@@ -26,6 +29,20 @@ public class UserController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
     {
+        var keyAccessClaim = User.FindFirst("Keys")?.Value;
+
+        if(string.IsNullOrEmpty(keyAccessClaim))
+        {
+            return BadRequest("Access key not found.");
+        }
+
+        var keyAccessDict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(keyAccessClaim);
+
+        if(!keyAccessDict.TryGetValue("CanViewUsers", out var hasAccess) || !hasAccess)
+        {
+            return StatusCode(403, "You do not have access to view all the users.");
+        }
+
         var users = _userContext.Users.Select(u => new {
             u.Id,
             u.UserName,
@@ -50,6 +67,19 @@ public class UserController : ControllerBase
     [HttpGet("userPage")]
     public async Task<ActionResult<User>> GetUser(string username)
     {
+        var keyAccessClaim = User.FindFirst("Keys")?.Value;
+
+        if (string.IsNullOrEmpty(keyAccessClaim))
+        {
+            return BadRequest("Access key not found.");
+        }
+
+        var keyAccessDict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(keyAccessClaim);
+
+        if (!keyAccessDict.TryGetValue("ShowCurrentUser", out var hasAccess) || !hasAccess)
+        {
+            return StatusCode(403, "You do not have access to view the current user.");
+        }
         var user = await _userContext.Users.FirstOrDefaultAsync(u => u.UserName == username);
         user.UserName = HtmlEncoder.Default.Encode(user.UserName);
         if (user == null)
@@ -63,6 +93,19 @@ public class UserController : ControllerBase
     [HttpDelete("DeleteUser")]
     public async Task<IActionResult> DeleteUser(string username)
     {
+        var keyAccessClaim = User.FindFirst("Keys")?.Value;
+
+        if (string.IsNullOrEmpty(keyAccessClaim))
+        {
+            return BadRequest("Access key not found.");
+        }
+
+        var keyAccessDict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(keyAccessClaim);
+
+        if (!keyAccessDict.TryGetValue("DeleteCurrentUser", out var hasAccess) || !hasAccess)
+        {
+            return StatusCode(403, "You do not have access to delete the current user.");
+        }
         var user = await _userContext.Users.FirstOrDefaultAsync(u => u.UserName.Equals(username));
         if (user == null)
         {
@@ -78,6 +121,17 @@ public class UserController : ControllerBase
     [HttpPut("EditUser")]
     public async Task<IActionResult> Edit(string username, [FromBody] UserDTO userDTO)
     {
+        var keyAccessClaim = User.FindFirst("Keys")?.Value;
+        if(string.IsNullOrEmpty(keyAccessClaim))
+        {
+            return BadRequest("Access key not found.");
+        }
+
+        var keyAccessDict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(keyAccessClaim);
+        if (!keyAccessDict.TryGetValue("EditCurrentUser", out var hasAccess) || !hasAccess)
+        {
+            return StatusCode(403, "You do not have access to edit the current user.");
+        }
         var user = await _userContext.Users.FirstOrDefaultAsync(u => u.UserName.Equals(username));
         if (user == null)
         {
@@ -135,10 +189,22 @@ public class UserController : ControllerBase
     }
 
     // Super Admin Promotes A Regular User To Admin User
-    [Authorize(Roles = "SuperAdmin")]
+    [Authorize(Roles = "superadmin")]
     [HttpPut("Promote")]
     public async Task<IActionResult> Promote(string username)
     {
+        var keyAccessClaim = User.FindFirst("Keys")?.Value;
+        if (string.IsNullOrEmpty(keyAccessClaim))
+        {
+            return BadRequest("Access key not found.");
+        }
+
+        var keyAccessDict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(keyAccessClaim);
+        if (!keyAccessDict.TryGetValue("PromoteUsers", out var hasAccess) || !hasAccess)
+        {
+            return StatusCode(403, "You do not have access to promote the current user.");
+        }
+
         var user = _userContext.Users.FirstOrDefault(u => u.UserName.Equals(username));
         if (user == null)
         {
@@ -172,6 +238,18 @@ public class UserController : ControllerBase
     [HttpPut("Demote")]
     public async Task<IActionResult> Demote(string username)
     {
+        var keyAccessClaim = User.FindFirst("Keys")?.Value;
+        if (string.IsNullOrEmpty(keyAccessClaim))
+        {
+            return BadRequest("Access key not found.");
+        }
+
+        var keyAccessDict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(keyAccessClaim);
+        if (!keyAccessDict.TryGetValue("DemoteUsers", out var hasAccess) || !hasAccess)
+        {
+            return StatusCode(403, "You do not have access to demote the current user.");
+        }
+
         var admin = _userContext.Users.FirstOrDefault(a => a.UserName.Equals(username));
 
         if (admin == null)
