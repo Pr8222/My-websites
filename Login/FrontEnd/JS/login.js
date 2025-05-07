@@ -21,6 +21,7 @@ $(document).ready(function () {
           localStorage.setItem("username", userData.username);
           localStorage.setItem("token", token);
           localStorage.setItem("role", jsonToken.role);
+          console.log(userData.username);
           CheckUserRole(userData.username);
         }
       },
@@ -47,6 +48,9 @@ $(document).ready(function () {
     $.ajax({
       type: "Get",
       url: `http://localhost:5224/api/User/userPage?username=${username}`,
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
       success: function (response) {
         if (response.role == "Admin" || response.role == "SuperAdmin") {
           document.location.href = "/HTML/adminDashboard.html";
@@ -57,8 +61,9 @@ $(document).ready(function () {
         }
       },
       error: function () {
+      alert("User not found!!!!!!");
         document.location.href = "/HTML/login.html";
-        ShowToast("User not found", "danger");
+        // ShowToast("User not found", "danger");
       },
     });
   }

@@ -6,8 +6,7 @@ using System.Text.Encodings.Web;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using LoginAPI.Services.PasswordService;
-using System.Security.Claims;
-using Newtonsoft.Json;
+using LoginAPI.Attributes;
 
 namespace LoginAPI.Controllers;
 
@@ -26,23 +25,10 @@ public class UserController : ControllerBase
     }
     //Get: api/user all users
     [Authorize(Roles = "Admin, SuperAdmin")]
+    [HasKey("ViewUsers")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetAllUsers()
     {
-        var keyAccessClaim = User.FindFirst("Keys")?.Value;
-
-        if(string.IsNullOrEmpty(keyAccessClaim))
-        {
-            return BadRequest("Access key not found.");
-        }
-
-        var keyAccessDict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(keyAccessClaim);
-
-        if(!keyAccessDict.TryGetValue("CanViewUsers", out var hasAccess) || !hasAccess)
-        {
-            return StatusCode(403, "You do not have access to view all the users.");
-        }
-
         var users = _userContext.Users.Select(u => new {
             u.Id,
             u.UserName,
@@ -65,21 +51,9 @@ public class UserController : ControllerBase
     //Get: api/user/userPage
     [AllowAnonymous]
     [HttpGet("userPage")]
-    public async Task<ActionResult<User>> GetUser(string username)
+    [HasKey("ShowCurrentUser")]
+    public async Task<ActionResult<UserRoleDTO>> GetUser(string username)
     {
-        var keyAccessClaim = User.FindFirst("Keys")?.Value;
-
-        if (string.IsNullOrEmpty(keyAccessClaim))
-        {
-            return BadRequest("Access key not found.");
-        }
-
-        var keyAccessDict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(keyAccessClaim);
-
-        if (!keyAccessDict.TryGetValue("ShowCurrentUser", out var hasAccess) || !hasAccess)
-        {
-            return StatusCode(403, "You do not have access to view the current user.");
-        }
         var user = await _userContext.Users.FirstOrDefaultAsync(u => u.UserName == username);
         user.UserName = HtmlEncoder.Default.Encode(user.UserName);
         if (user == null)
@@ -87,25 +61,24 @@ public class UserController : ControllerBase
             return NotFound();
         }
 
-        return user;
+        var userData = new UserRoleDTO
+        {
+            UserName = user.UserName,
+            Email = user.Email,
+            Age = user.Age,
+            Role = _userContext.RoleUsers
+                .Where(ru => ru.UserId == user.Id)
+                .Select(ru => _userContext.Roles.FirstOrDefault(r => r.Id == ru.RoleId).RoleName)
+                .FirstOrDefault()
+        };
+
+        return userData;
     }
     [AllowAnonymous]
     [HttpDelete("DeleteUser")]
+    [HasKey("DeleteCurrentUser")]
     public async Task<IActionResult> DeleteUser(string username)
     {
-        var keyAccessClaim = User.FindFirst("Keys")?.Value;
-
-        if (string.IsNullOrEmpty(keyAccessClaim))
-        {
-            return BadRequest("Access key not found.");
-        }
-
-        var keyAccessDict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(keyAccessClaim);
-
-        if (!keyAccessDict.TryGetValue("DeleteCurrentUser", out var hasAccess) || !hasAccess)
-        {
-            return StatusCode(403, "You do not have access to delete the current user.");
-        }
         var user = await _userContext.Users.FirstOrDefaultAsync(u => u.UserName.Equals(username));
         if (user == null)
         {
@@ -118,20 +91,10 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
+    [HasKey("EditCurrentUser")]
     [HttpPut("EditUser")]
     public async Task<IActionResult> Edit(string username, [FromBody] UserDTO userDTO)
     {
-        var keyAccessClaim = User.FindFirst("Keys")?.Value;
-        if(string.IsNullOrEmpty(keyAccessClaim))
-        {
-            return BadRequest("Access key not found.");
-        }
-
-        var keyAccessDict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(keyAccessClaim);
-        if (!keyAccessDict.TryGetValue("EditCurrentUser", out var hasAccess) || !hasAccess)
-        {
-            return StatusCode(403, "You do not have access to edit the current user.");
-        }
         var user = await _userContext.Users.FirstOrDefaultAsync(u => u.UserName.Equals(username));
         if (user == null)
         {
@@ -190,21 +153,10 @@ public class UserController : ControllerBase
 
     // Super Admin Promotes A Regular User To Admin User
     [Authorize(Roles = "superadmin")]
+    [HasKey("PromoteUser")]
     [HttpPut("Promote")]
     public async Task<IActionResult> Promote(string username)
     {
-        var keyAccessClaim = User.FindFirst("Keys")?.Value;
-        if (string.IsNullOrEmpty(keyAccessClaim))
-        {
-            return BadRequest("Access key not found.");
-        }
-
-        var keyAccessDict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(keyAccessClaim);
-        if (!keyAccessDict.TryGetValue("PromoteUsers", out var hasAccess) || !hasAccess)
-        {
-            return StatusCode(403, "You do not have access to promote the current user.");
-        }
-
         var user = _userContext.Users.FirstOrDefault(u => u.UserName.Equals(username));
         if (user == null)
         {
@@ -235,21 +187,10 @@ public class UserController : ControllerBase
 
     // Super Admin Demotes An Admin To A Regular User
     [Authorize(Roles = "SuperAdmin")]
+    [HasKey("DemoteUser")]
     [HttpPut("Demote")]
     public async Task<IActionResult> Demote(string username)
     {
-        var keyAccessClaim = User.FindFirst("Keys")?.Value;
-        if (string.IsNullOrEmpty(keyAccessClaim))
-        {
-            return BadRequest("Access key not found.");
-        }
-
-        var keyAccessDict = JsonConvert.DeserializeObject<Dictionary<string, bool>>(keyAccessClaim);
-        if (!keyAccessDict.TryGetValue("DemoteUsers", out var hasAccess) || !hasAccess)
-        {
-            return StatusCode(403, "You do not have access to demote the current user.");
-        }
-
         var admin = _userContext.Users.FirstOrDefault(a => a.UserName.Equals(username));
 
         if (admin == null)
