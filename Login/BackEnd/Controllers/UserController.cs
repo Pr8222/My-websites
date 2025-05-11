@@ -159,8 +159,8 @@ public class UserController : ControllerBase
     }
 
     // Super Admin Promotes A Regular User To Admin User
-    [Authorize(Roles = "superadmin")]
-    [HasKey("PromoteUser")]
+    [Authorize(Roles = "SuperAdmin")]
+    [HasKey("PromoteUsers")]
     [HttpPut("Promote")]
     public async Task<IActionResult> Promote(string username)
     {
@@ -194,7 +194,7 @@ public class UserController : ControllerBase
 
     // Super Admin Demotes An Admin To A Regular User
     [Authorize(Roles = "SuperAdmin")]
-    [HasKey("DemoteUser")]
+    [HasKey("DemoteUsers")]
     [HttpPut("Demote")]
     public async Task<IActionResult> Demote(string username)
     {
@@ -232,7 +232,7 @@ public class UserController : ControllerBase
         _userContext.RoleUsers.Add(new RoleUser
         {
             UserId = admin.Id,
-            RoleId = adminRole.Id
+            RoleId = userRole.Id
         });
 
         await _userContext.SaveChangesAsync();
