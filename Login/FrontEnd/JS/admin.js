@@ -7,14 +7,20 @@ $(document).ready(function () {
     },
     dataType: "json",
     success: function (response) {
-      console.log(response);
       let table = $("#usersTable").DataTable({
         processing: true,
         stateSave: true,
-        scrollX: true,
         data: response.data,
         columns: [
-          { data: "id" },
+          {
+            data: "id",
+            // Showing the ids as a link
+            render: function (data, type, row) {
+              return `<a class="openModal" data-id="${data}" style="cursor: pointer; color: #fff;
+              text-decoration: none;
+              font-weight: 600;">${data}</a>`;
+            },
+          },
           { data: "userName" },
           { data: "email" },
           { data: "age" },
@@ -56,6 +62,14 @@ $(document).ready(function () {
       $("#usersTable tbody").on("click", ".demoteUser", function () {
         var row = $(this).closest("tr");
         Demote(table, row);
+      });
+
+      // Opening the modal to show all of the current user data
+      $("#usersTable tbody").on("click", ".openModal", function () {
+        var row = $(this).closest("tr");
+        var rowData = table.row(row).data();
+        console.log(rowData);
+        $("#showModal").modal("show");
       });
 
       // This function is called when the super admin wants to promote a normal user
