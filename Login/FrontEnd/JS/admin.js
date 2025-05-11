@@ -67,9 +67,7 @@ $(document).ready(function () {
       // Opening the modal to show all of the current user data
       $("#usersTable tbody").on("click", ".openModal", function () {
         var row = $(this).closest("tr");
-        var rowData = table.row(row).data();
-        console.log(rowData);
-        $("#showModal").modal("show");
+        ShowCurrentUser(table, row);
       });
 
       // This function is called when the super admin wants to promote a normal user
@@ -122,6 +120,18 @@ $(document).ready(function () {
             );
           },
         });
+      }
+      // This function shows all of a user data
+      function ShowCurrentUser(table, row) {
+        var rowData = table.row(row).data();
+
+        $(".userId").html(`<p>User id: ${rowData.id}</p>`);
+        $(".userName").html(`<p>Username: ${rowData.userName}</p>`);
+        $(".userEmail").html(`<p>User email: ${rowData.email}</p>`);
+        $(".userAge").html(`<p>User age: ${rowData.age}</p>`);
+        $(".userRole").html(`<p>User role: ${rowData.role}</p>`);
+        $(".userKeys").html(`<p title="${rowData.keys}">User keys: ${rowData.keys}</p>`);
+        $("#showModal").modal("show");
       }
     },
   });
