@@ -89,3 +89,13 @@ div.dt-container .dt-paging .dt-paging-button:hover {
     box-shadow: 0 0 10px rgba(0, 0, 0, .1);
     color: white !important;
 }
+
+table{
+    table-layout: fixed;
+    width: 100%;
+}
+
+th, td, tfoot{
+    text-align: center;
+    vertical-align: middle;
+}

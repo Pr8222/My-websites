@@ -37,7 +37,14 @@ public class UserController : ControllerBase
             Role = _userContext.RoleUsers
                 .Where(ru => ru.UserId == u.Id)
                 .Select(ru => _userContext.Roles.FirstOrDefault(r => r.Id == ru.RoleId).RoleName)
-                .FirstOrDefault()
+                .FirstOrDefault(),
+            Keys = _userContext.RoleKeys
+                .Where(rk => _userContext.RoleUsers
+                            .Where(ru => ru.UserId == u.Id)
+                            .Select(ru => ru.RoleId)
+                            .Contains(rk.RoleId))
+                        .Select(rk => rk.Key.KeyName)
+                        .ToList()
         }).ToList();
 
         return Ok(new
