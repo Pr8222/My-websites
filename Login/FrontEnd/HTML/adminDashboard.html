@@ -45,8 +45,45 @@
         </table>
     </div>
 
-    <div class="modalEditing">
-
+    <div id="modalEditing" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Change admin datas</h1>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="editInfo">
+                        <div class="row input-box">
+                            <label for="editId" class="form-label">User Id</label>
+                            <input type="text" id="editId" class="form-control" disabled>
+                        </div>
+                        <div class="row input-box">
+                            <label for="editUsername" class="form-label">Username</label>
+                            <input type="text" id="editUsername" class="form-control">
+                        </div>
+                        <div class="row input-box">
+                            <label for="editEmail" class="form-label">Email</label>
+                            <input type="email" id="editEmail" class="form-control">
+                        </div>
+                        <div class="row input-box">
+                            <label for="editAge" class="form-label">Age</label>
+                            <input type="number" id="editAge"  class="form-control">
+                        </div>
+                        <div class="row input-box">
+                            <label for="editPassword" class="form-label">Password</label>
+                            <input type="text" id="editPassword" class="form-control">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" id="saveBtn">Save</button>
+                    <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Modal -->
@@ -56,7 +93,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="staticBackdropLabel">Show all users</h1>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="wrapper">

@@ -75,6 +75,10 @@ h1 {
     cursor: default;
 }
 
+.form-control:disabled{
+    color:black;
+}
+
 .dt-container select.dt-input {
     background-color: #AC57D8;
 }
@@ -103,6 +107,24 @@ tfoot {
     vertical-align: middle;
 }
 
+.input-box{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.input-box input {
+    width: 100%;
+    height: 50px;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid rgba(255, 255, 255, .2);
+    border-radius: 40px;
+    font-size: 16px;
+    color:#fff;
+    padding: 20px 45px 20px 20px;
+}
+
 .userKeys {
     max-width: 400px;
     white-space: nowrap;
@@ -128,6 +150,7 @@ tfoot {
     background: #532AAE;
     color:#fff;
     border: 2px solid rgba(255, 255, 255, .2);
+    flex-wrap: nowrap;
 }
 
 

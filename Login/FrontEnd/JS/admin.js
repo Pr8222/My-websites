@@ -7,9 +7,9 @@ $(document).ready(function () {
       type: "GET",
       dataSrc: "data",
       headers: {
-        "Authorization": "Bearer " + localStorage.getItem("token")
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
-    },   
+    },
     columns: [
       {
         data: "id",
@@ -67,6 +67,35 @@ $(document).ready(function () {
   $("#usersTable tbody").on("click", ".openModal", function () {
     var row = $(this).closest("tr");
     ShowCurrentUser(table, row);
+  });
+
+  // Opening the modal to edit the admin or super admin information
+  $("#editAdmin").on("click", function (ev) {
+    ev.preventDefault();
+    $("#usersTable tbody tr").each(function () {
+      var row = $(this);
+      const rowUsername = row.find("td:eq(1)").text().trim();
+      if (rowUsername == localStorage.getItem("username")) {
+        var rowData = row
+          .find("td")
+          .map(function () {
+            return $(this).text().trim();
+          })
+          .get();
+        // Setting the values of each inputs
+        $("#editId").val(rowData.id);
+        $("#editUsername").val(rowData.userName);
+        $("#editEmail").val(rowData.email);
+        $("#editAge").val(rowData.age);
+        // Open modal
+        $("#editModal").modal("show");
+        $("#saveBtn")
+          .off("click")
+          .on("click", function () {
+            ChangeInfo();
+          });
+      }
+    });
   });
 
   // This function is called when the super admin wants to promote a normal user
@@ -129,5 +158,35 @@ $(document).ready(function () {
       `<p title="${rowData.keys}">User keys: ${rowData.keys}</p>`
     );
     $("#showModal").modal("show");
+  }
+  // This function edits superAdmin or admin information such as username, password, and email
+  function ChangeInfo() {
+    var updatedData = {
+      id: $("#editId").val(),
+      username: $("#editUsername").val(),
+      email: $("#editEmail").val(),
+      age: $("#editAge").val(),
+      password: $("editPassword").val(),
+    };
+    $.ajax({
+      type: "PUT",
+      url: `http://localhost:5224/api/User/EditUser?${localStorage.getItem(
+        "username"
+      )}`,
+      data: JSON.stringify(updatedData),
+      dataType: "json",
+      contentType: "application/json",
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+      success: function (response) {
+        localStorage.setItem("username", updatedData.username);
+        location.reload();
+        ShowToast("The account has been changed successfully", "success");
+      },
+      error: function (error, xhr, status) {
+        alert(error);
+      },
+    });
   }
 });

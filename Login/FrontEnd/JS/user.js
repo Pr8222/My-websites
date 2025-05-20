@@ -62,6 +62,9 @@ $(document).ready(function () {
       url: `http://localhost:5224/api/User/userPage?username=${localStorage.getItem(
         "username"
       )}`,
+      headers:{
+        Authorization: "Bearer " + localStorage.getItem("token")
+      },
       success: function (response) {
         // Fallback to the existing values from the GET response if the user entered nothing
         updatedData.username = updatedData.username || response.userName;
