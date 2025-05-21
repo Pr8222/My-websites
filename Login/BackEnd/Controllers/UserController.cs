@@ -107,7 +107,10 @@ public class UserController : ControllerBase
         {
             return BadRequest("User not found.");
         }
-
+        // Checks that if the new username is already taken or not
+        if(_userContext.Users.Any(u => u.UserName == userDTO.UserName)){
+            return BadRequest("Username already taken.");
+        }
         // Update the user
         // Update the username if the username is null
         if (!string.IsNullOrEmpty(userDTO.UserName))
@@ -126,6 +129,15 @@ public class UserController : ControllerBase
         else
         {
             user.Email = user.Email;
+        }
+        // Update the age if the age is null
+        if (userDTO.Age != 0)
+        {
+            user.Age = userDTO.Age;
+        }
+        else
+        {
+            user.Age = user.Age;
         }
         // Update the password if the password is null
         if (!string.IsNullOrEmpty(userDTO.Password))

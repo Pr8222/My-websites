@@ -14,12 +14,11 @@ namespace Models
         [Column("email")]
         public string Email { get; set; }
 
+        [Column("age")]
+        public int Age { get; set; }
 
         [Column("password")]
         public string Password { get; set; }
-
-        [Column("age")]
-        public int Age { get; set; }
 
     }
 }

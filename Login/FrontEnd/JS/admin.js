@@ -83,12 +83,12 @@ $(document).ready(function () {
           })
           .get();
         // Setting the values of each inputs
-        $("#editId").val(rowData.id);
-        $("#editUsername").val(rowData.userName);
-        $("#editEmail").val(rowData.email);
-        $("#editAge").val(rowData.age);
+        $("#editId").val(rowData[0]);
+        $("#editUsername").val(rowData[1]);
+        $("#editEmail").val(rowData[2]);
+        $("#editAge").val(rowData[3]);
         // Open modal
-        $("#editModal").modal("show");
+        $("#modalEditing").modal("show");
         $("#saveBtn")
           .off("click")
           .on("click", function () {
@@ -162,15 +162,14 @@ $(document).ready(function () {
   // This function edits superAdmin or admin information such as username, password, and email
   function ChangeInfo() {
     var updatedData = {
-      id: $("#editId").val(),
-      username: $("#editUsername").val(),
-      email: $("#editEmail").val(),
-      age: $("#editAge").val(),
-      password: $("editPassword").val(),
+      username: $("#editUsername").val().trim(),
+      email: $("#editEmail").val().trim(),
+      password: $("#editPassword").val().trim(),
+      age: $("#editAge").val().trim(),
     };
     $.ajax({
       type: "PUT",
-      url: `http://localhost:5224/api/User/EditUser?${localStorage.getItem(
+      url: `http://localhost:5224/api/User/EditUser?username=${localStorage.getItem(
         "username"
       )}`,
       data: JSON.stringify(updatedData),
@@ -185,7 +184,7 @@ $(document).ready(function () {
         ShowToast("The account has been changed successfully", "success");
       },
       error: function (error, xhr, status) {
-        alert(error);
+        console.log(error);
       },
     });
   }
