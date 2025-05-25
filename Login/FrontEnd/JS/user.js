@@ -13,6 +13,7 @@ $(document).ready(function () {
 
   $("#deleteBtn").click(function (ev) {
     ev.preventDefault();
+    if (confirm("Are you sure to delete the account?")) {
     $.ajax({
       type: "DELETE",
       url: `http://localhost:5224/api/User/DeleteUser?username=${localStorage.getItem(
@@ -22,7 +23,7 @@ $(document).ready(function () {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
       success: function (response) {
-        if (confirm("Are you sure to delete the account?")) {
+        
           alert("Account Deleted Successfully");
           // Remove the token from local storage
           localStorage.removeItem("token");
@@ -33,9 +34,12 @@ $(document).ready(function () {
             "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
           // Redirect the user to the login page
           document.location.href = "/HTML/login.html";
-        }
       },
     });
+  }
+  else{
+    ShowToast(`User with username <u>${localStorage.getItem("username")}</u> has not been deleted.`, "warning");
+  }
   });
 
   $("#WelcomeUser").html(

@@ -9,6 +9,13 @@ $(document).ready(function () {
       password: $("#userPassword").val(),
       age: $("#userAge").val(),
     };
+    if (
+      ContainsHtml(newUserData.username) ||
+      ContainsHtml(newUserData.email)
+    ) {
+      ev.preventDefault(); // Prevent form submission
+      ShowToast("HTML tags are not allowed in any input fields.", "danger");
+    }
     if (newUserData.password !== $("#confirmPassword").val()) {
       ShowToast("The password doesn't match.", "warning");
     }
@@ -47,6 +54,11 @@ $(document).ready(function () {
       },
     });
   });
+  // Checks if the input has an html tag or not
+  function ContainsHtml(input) {
+    const htmlPatterns = /<[^>]*>/g;
+    return htmlPatterns.test(input);
+  }
   function ShowToast(message, type) {
     // Create a new toast element dynamically using jQuery
     $("#actionToast .toast-body").html(message);

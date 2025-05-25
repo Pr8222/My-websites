@@ -26,6 +26,8 @@ $(document).ready(function () {
         }
       },
       error: function (xhr, status, error) {
+        console.log(error);
+        debugger;
         ShowToast("No such user.", "danger");
       },
     });
