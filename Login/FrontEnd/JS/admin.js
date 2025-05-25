@@ -98,15 +98,21 @@ $(document).ready(function () {
     });
   });
 
+  // Logs out the admin
+  $("#logout").on("click", (ev) => {
+    ev.preventDefault();
+
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    document.location.href = "/HTML/login.html";
+  })
+
   // This function is called when the super admin wants to promote a normal user
   function Promote(table, row) {
     let rowData = table.row(row).data();
     let username = rowData.userName;
-
-    console.log(
-      "Begining the process to promote a user to an admin: ",
-      rowData
-    );
 
     // Call the promote api
     $.ajax({
@@ -116,11 +122,11 @@ $(document).ready(function () {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
       success: function (response) {
-        alert(response.message);
+        ShowToast(`The user with username <u>${username}</u> has been promoted to admin.`, "success");
         table.ajax.reload(null, false);
       },
       error: function (xhr, status, error) {
-        alert("There was an error to make the user to admin: " + xhr + error);
+        ShowToast(`Unable to promote <u>${username}</u>`, "danger");
       },
     });
   }
@@ -137,11 +143,11 @@ $(document).ready(function () {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
       success: function (response) {
-        alert("The admin has demoted to user: " + response.data);
+        ShowToast(`The admin with usernamer <u>${username}</u> has been demoted to user.`, "success");
         table.ajax.reload(null, false);
       },
       error: function (xhr, status, error) {
-        alert("There was an error while demoting the admin: " + xhr + error);
+        ShowToast(`Unable to demote admin with username <u>${username}</u>!`, "danger");
       },
     });
   }
@@ -181,11 +187,18 @@ $(document).ready(function () {
       success: function (response) {
         localStorage.setItem("username", updatedData.username);
         location.reload();
-        ShowToast("The account has been changed successfully", "success");
       },
       error: function (error, xhr, status) {
-        console.log(error);
+        ShowToast("Unable to change the info!", "danger")
       },
     });
+  }
+  function ShowToast(message, type) {
+    $("#actionToast .toast-body").html(message);
+    $("#actionToast")
+      .removeClass("bg-success bg-danger bg-warning")
+      .addClass(`bg-${type}`);
+    let toast = new bootstrap.Toast($("#actionToast"));
+    toast.show();
   }
 });
