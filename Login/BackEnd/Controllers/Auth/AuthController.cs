@@ -1,6 +1,5 @@
 ﻿using Data;
 using Models;
-using LoginAPI.Services.HtmlSanitizerService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +8,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using LoginAPI.Services.PasswordService;
+using LoginAPI.Services.HtmlRejecter;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -23,14 +23,12 @@ public class AuthController : ControllerBase
     private readonly IConfiguration _config;
     private readonly PasswordService _passwordService; // For hashing password
     private readonly IPasswordHasher<User> _passwordHasher; // For verifying the hashed password
-    private readonly HtmlSanitizerService _sanitizer;
     public AuthController(UserContext context, IConfiguration configuration, IPasswordHasher<User> passwordHasher)
     {
         _userContext = context;
         _config = configuration;
         _passwordHasher = passwordHasher;
         _passwordService = new PasswordService();
-        _sanitizer = new HtmlSanitizerService();
     }
 
     [HttpPost("Register")]
@@ -40,13 +38,14 @@ public class AuthController : ControllerBase
         {
             return BadRequest(ModelState);
         }
+        if (HtmlRejecter.ContainsHtml(userDTO.UserName) ||
+               HtmlRejecter.ContainsHtml(userDTO.Email))
+        {
+            ModelState.AddModelError("", "HTML tags are not permited");
+            return BadRequest(ModelState);
+        }
         try
         {
-            // Sanitize user input (prevent XSS)
-            var sanitizer = new HtmlSanitizerService();
-            userDTO.UserName = sanitizer.Sanitize(userDTO.UserName);
-            userDTO.Email = sanitizer.Sanitize(userDTO.Email);
-
             if (_userContext.Users.Any(u => u.UserName == userDTO.UserName))
             {
                 return BadRequest("Username already taken.");

@@ -1,0 +1,2 @@
+httpsanitizer(backend)
+adminDashboard shows the html injected tags 
