@@ -22,16 +22,18 @@ $(document).ready(function () {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
       success: function (response) {
-        alert("Account Deleted Successfully");
-        // Remove the token from local storage
-        localStorage.removeItem("token");
-        //Remove the toke from the session storage
-        sessionStorage.removeItem("token");
-        // Remove the token from the cookie
-        document.cookie =
-          "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        // Redirect the user to the login page
-        document.location.href = "/HTML/login.html";
+        if (confirm("Are you sure to delete the account?")) {
+          alert("Account Deleted Successfully");
+          // Remove the token from local storage
+          localStorage.removeItem("token");
+          //Remove the toke from the session storage
+          sessionStorage.removeItem("token");
+          // Remove the token from the cookie
+          document.cookie =
+            "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          // Redirect the user to the login page
+          document.location.href = "/HTML/login.html";
+        }
       },
     });
   });
@@ -47,7 +49,7 @@ $(document).ready(function () {
       username: $("#username").val().trim(),
       email: $("#userEmail").val().trim(),
       age: $("#userAge").val().trim(),
-      password: $("#userPassword").val().trim()
+      password: $("#userPassword").val().trim(),
     };
 
     // Check if passwords match before proceeding
@@ -62,8 +64,8 @@ $(document).ready(function () {
       url: `http://localhost:5224/api/User/userPage?username=${localStorage.getItem(
         "username"
       )}`,
-      headers:{
-        Authorization: "Bearer " + localStorage.getItem("token")
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
       },
       success: function (response) {
         // Fallback to the existing values from the GET response if the user entered nothing
@@ -76,7 +78,6 @@ $(document).ready(function () {
           $("#userPassword").val().trim() == null
             ? ""
             : $("#userPassword").val().trim();
-
 
         // Send the PUT request to update user data
         $.ajax({
@@ -96,12 +97,12 @@ $(document).ready(function () {
             ShowToast("The account has been changed successfully", "success");
           },
           error: function (xhr, status, error) {
-            console.log(xhr, error);
+            ShowToast("Unable to edit the user info.", "danger");
           },
         });
       },
       error: function (xhr, status, error) {
-        console.log(error);
+        ShowToast("Unable to get the user data from the server!", "danger");
       },
     });
   });
@@ -110,28 +111,11 @@ $(document).ready(function () {
   }
   // Creating a pop-up notification function
   function ShowToast(message, type) {
-    // Create a new toast element dynamically using jQuery
-    var toast = $(
-      '<div class="toast fade" role="alert" aria-live="assertive" aria-atomic="true"></div>'
-    );
-    toast.addClass(`bg-${type}`);
-
-    // Add toast content
-    toast.append(`
-      <div class="toast-body" style="display: flex; justify-content: space-between;" >
-          <p style="color: #FFF; font-size: 14px;">${message}</p>
-          <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close" style="color: #FFF"></button>
-      </div>
-  `);
-    // Append the toast to the container
-    $("#toastContainer").append(toast);
-
-    // Create a new Bootstrap toast instance and show it
-    var bootstrapToast = new bootstrap.Toast(toast[0]);
-    bootstrapToast.show();
-    // Optional: Remove toast after 3 seconds
-    setTimeout(function () {
-      toast.remove();
-    }, 5000);
+    $("#actionToast .toast-body").html(message);
+    $("#actionToast")
+      .removeClass("bg-success bg-danger bg-warning")
+      .addClass(`bg-${type}`);
+    let toast = new bootstrap.Toast($("#actionToast"));
+    toast.show();
   }
 });

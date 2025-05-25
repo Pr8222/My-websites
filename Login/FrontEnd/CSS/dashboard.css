@@ -96,9 +96,10 @@ hr {
 
 .wrapper p {
     font-size: 16px;
+    text-align: justify;
 }
 
-.wrapper p a {
+.wrapper a {
     color: #fff;
     text-decoration: none;
     font-weight: 600;
@@ -108,3 +109,10 @@ hr {
     margin-top: 20px;
 }
 
+#toastContainer{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin-left: 5px;
+    margin-bottom: 5px;
+}
