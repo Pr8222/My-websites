@@ -20,8 +20,16 @@ $(document).ready(function () {
               font-weight: 600;">${data}</a>`;
         },
       },
-      { data: "userName" },
-      { data: "email" },
+      { data: "userName",
+        render: function (data) {
+          return EscapeHtml(data);
+        }
+       },
+      { data: "email",
+        render: function (data) {
+          return EscapeHtml(data);
+        }
+       },
       { data: "age" },
       { data: "role" },
       {
@@ -200,5 +208,13 @@ $(document).ready(function () {
       .addClass(`bg-${type}`);
     let toast = new bootstrap.Toast($("#actionToast"));
     toast.show();
+  }
+  function EscapeHtml(text) {
+    return text
+      ?.replace(/&/g, "&amp;")
+      ?.replace(/</g, "&alt;")
+      ?.replace(/>/g, "&gt;")
+      ?.replace(/"/g, "&quot;")
+      ?.replace(/'/g, "$#039")
   }
 });
