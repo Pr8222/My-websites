@@ -5,7 +5,6 @@
     padding: 0;
     box-sizing: border-box;
     font-family: "Poppins", sans-serif;
-    font-size: 14px;
 }
 
 body {
@@ -18,103 +17,37 @@ body {
     flex-direction: column;
 }
 
-.dt-input{
-    margin-right: 5px;
+hr {
+    background-color: rgba(255, 255, 255, .2);
+}
+
+.row {
+    max-width: 100%;
+    display: flex;
 }
 
 .wrapper {
-    width: 75%;
-    background-color: rgba(0, 0, 0, .1);
+    text-align: center;
+    width: auto;
+    background-color: transparent;
     border: 2px solid rgba(255, 255, 255, .2);
     backdrop-filter: blur(5px);
     box-shadow: 0 0 10px rgba(0, 0, 0, .2);
-    color: #fff;
+    color: white;
     border-radius: 10px;
     padding: 30px 40px;
-    text-align: center;
+    margin: 0px 2px 0px
 }
 
-h1 {
-    font-size: large;
-    font-weight: 900;
+.row h1 {
+    font-size: 25px;
+    font-family: "Poppins", sans-serif;
+    color: #fff;
+    font-weight: 700;
+
 }
 
-.action-buttons {
-    display: flex;
-}
-
-.wrapper table {
-    width: 100%;
-}
-
-.btn,
-.superAdminOnly {
-    width: 100%;
-    height: 40px;
-    background: #fff;
-    border: none;
-    outline: none;
-    border-radius: 40px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
-    cursor: pointer;
-    font-size: 16px;
-    color: #333;
-    font-weight: 600;
-    padding: 5px;
-    margin: 5px;
-}
-
-.btnContainer {
-    display: flex;
-    flex-direction: row;
-}
-
-.btn {
-    width: 50%;
-}
-
-.superAdminOnly:disabled {
-    background-color: #7943D7;
-    color: rgba(255, 255, 255, .2);
-    cursor: default;
-}
-
-.form-control:disabled{
-    color:black;
-}
-
-.dt-container select.dt-input {
-    background-color: #AC57D8;
-}
-
-div.dt-layout-cell .dt-layout-end .dt-paging-button {
-    border: 2px solid rgba(255, 255, 255, .2);
-    border-radius: 10px;
-}
-
-div.dt-container .dt-paging .dt-paging-button:hover {
-    background: none;
-    background-color: #330A6A !important;
-    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
-    color: white !important;
-}
-
-table {
-    table-layout: fixed;
-    width: 100%;
-}
-
-th,
-td,
-tfoot {
-    text-align: center;
-    vertical-align: middle;
-    max-width: 100%;
-    word-wrap: break-word;
-    white-space: normal !important;
-}
-
-.input-box{
+.input-box {
     margin-top: 10px;
     margin-bottom: 10px;
 }
@@ -128,22 +61,49 @@ tfoot {
     border: 2px solid rgba(255, 255, 255, .2);
     border-radius: 40px;
     font-size: 16px;
-    color:#fff;
+    color: #fff;
     padding: 20px 45px 20px 20px;
 }
 
-.userKeys {
-    max-width: 400px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: inline-block;
-    cursor: default;
+.btn {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    background: #fff;
+    border: none;
+    outline: none;
+    border-radius: 40px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+}
+
+.wrapper p {
+    font-size: 16px;
+    text-align: justify;
+}
+
+.wrapper a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.btnContainer {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+}
+
+.btnContainer button {
+    margin-right: 10px;
 }
 
 .modal-header {
     background: #532AAE;
-    color:#fff;
+    color: #fff;
     border: 2px solid rgba(255, 255, 255, .2);
 }
 
@@ -155,13 +115,13 @@ tfoot {
 
 .modal-footer {
     background: #532AAE;
-    color:#fff;
+    color: #fff;
     border: 2px solid rgba(255, 255, 255, .2);
     flex-wrap: nowrap;
 }
 
 
-.modal-body .wrapper{
+.modal-body .wrapper {
     width: 100%;
     background-color: rgba(0, 0, 0, .1);
     border: 2px solid rgba(255, 255, 255, .3);
@@ -172,10 +132,20 @@ tfoot {
     padding: 30px 40px;
 }
 
-#toastContainer{
+#toastContainer {
     position: absolute;
     left: 0;
     bottom: 0;
     margin-left: 5px;
     margin-bottom: 5px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
 }

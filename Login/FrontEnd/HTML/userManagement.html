@@ -8,58 +8,77 @@
     <title>نت راز</title>
     <link rel="stylesheet" href="/CSS/bootstrap.min.css">
     <link rel="stylesheet" href="/CSS/datatables.min.css">
-    <link rel="stylesheet" href="/CSS/adminDashboard.css">
+    <link rel="stylesheet" href="/CSS/userManagement.css">
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
 </head>
 
 <body>
     <div class="wrapper" style="margin-bottom: 8px;">
-        <h1 style="margin-bottom: 20px;">Admin Dashboard</h1>
+        <h1>User Management Dashoboard</h1>
         <div class="btnContainer">
+            <button class="btn verification">SuperAdmin</button>
             <button class="btn" id="editAdmin">Edit Info</button>
-            <button class="btn" id="logout">Logout</button>
-        </div>
-        <div class="btnContainer">
-            <button class="btn" id="editKeys">Key List</button>
-            <button class="btn" id="userManagement">Mange Users</button>
+            <button class="btn" id="logout"></button>
         </div>
     </div>
+    <div class="wrapper">
+        <table id="usersTable" style="font-size: 12px;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Age</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Age</th>
+                    <th>Role</th>
+                    <th>Actions</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 
-    <div id="modalEditing" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    <!-- Modal -->
+    <div class="modal fade" id="showModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
         aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Change admin datas</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Show all users</h1>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form class="editInfo">
-                        <div class="row input-box">
-                            <label for="editUsername" class="form-label">Username</label>
-                            <input type="text" id="editUsername" class="form-control">
+                    <div class="wrapper">
+                        <div class="userId">
+                            <p>User Id:</p>
                         </div>
-                        <div class="row input-box">
-                            <label for="editEmail" class="form-label">Email</label>
-                            <input type="email" id="editEmail" class="form-control">
+                        <div class="userName">
+                            <p>Username:</p>
                         </div>
-                        <div class="row input-box">
-                            <label for="editAge" class="form-label">Age</label>
-                            <input type="number" id="editAge"  class="form-control">
+                        <div class="userEmail">
+                            <p>User Email:</p>
                         </div>
-                        <div class="row input-box">
-                            <label for="editPassword" class="form-label">Password</label>
-                            <input type="password" id="editPassword" class="form-control">
+                        <div class="userAge">
+                            <p>User Age:</p>
                         </div>
-                        <div class="row input-box">
-                            <label for="confirmPassword" class="form-label">Confirm Password</label>
-                            <input type="password" id="confirmPassword" class="form-control">
+                        <div class="userRole">
+                            <p>User Role:</p>
                         </div>
-                    </form>
+                        <div class="userKeys">
+                            <p>User Keys:</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn" id="saveBtn">Save</button>
                     <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -78,7 +97,7 @@
     <script src="/JS/bootstrap.bundle.min.js"></script>
     <script src="/JS/jquery-3.7.1.js"></script>
     <script src="/JS/datatables.min.js"></script>
-    <script src="/JS/admin.js"></script>
+    <script src="/JS/userManagement.js"></script>
 </body>
 
 </html>
