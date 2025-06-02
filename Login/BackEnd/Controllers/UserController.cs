@@ -81,6 +81,23 @@ public class UserController : ControllerBase
 
         return userData;
     }
+
+    // Show keys
+    [Authorize(Roles = "SuperAdmin")]
+    [HasKey("ShowKeys")]
+    [HttpGet("ShowKeys")]
+    public async Task<ActionResult<IEnumerable<User>>> GetKeys()
+    {
+        var keys = _userContext.Keys.Select(k => new
+        {
+            k.Id,
+            k.KeyName,
+            k.FriendlyKeyName
+        }).ToList();
+
+        return Ok(keys);
+    }
+
     [AllowAnonymous]
     [HttpDelete("DeleteUser")]
     [HasKey("DeleteCurrentUser")]

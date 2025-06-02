@@ -69,10 +69,10 @@ namespace Models
         public int RoleId { get; set; }
         public Role Role { get; set; }
         public int KeyId { get; set; }
-        public Key Key { get; set; }
+        public AccessKey Key { get; set; }
     }
 
-    public class Key
+    public class AccessKey
     {
         public int Id { get; set; }
         public string KeyName { get; set; }
@@ -88,7 +88,7 @@ namespace Models
         public string UserId { get; set; }
         public User User { get; set; }
         public int KeyId { get; set; }
-        public Key Key { get; set; }
+        public AccessKey Key { get; set; }
 
         public string? KeyValue { get; set; } // This is the value of the key for the user
         public DateTime? ExpirationDate { get; set; } // This is the expiration date of the key for the user
