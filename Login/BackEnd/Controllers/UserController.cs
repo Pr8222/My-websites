@@ -85,7 +85,7 @@ public class UserController : ControllerBase
     // Show keys
     [Authorize(Roles = "SuperAdmin")]
     [HasKey("ShowKeys")]
-    [HttpGet("ShowKeys")]
+    [HttpGet("showKeys")]
     public async Task<ActionResult<IEnumerable<User>>> GetKeys()
     {
         var keys = _userContext.Keys.Select(k => new
