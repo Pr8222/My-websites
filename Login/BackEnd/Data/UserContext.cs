@@ -13,7 +13,7 @@ namespace Data
         public DbSet<Role> Roles { get; set; }
         public DbSet<RoleUser> RoleUsers { get; set; }
         public DbSet<RoleKeys> RoleKeys { get; set; }
-        public DbSet<AccessKey> Keys { get; set; }
+        public DbSet<Key> Keys { get; set; }
         public DbSet<UserExtraKeys> UserExtraKeys { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

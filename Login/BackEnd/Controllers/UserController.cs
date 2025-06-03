@@ -1,4 +1,5 @@
 ﻿using Data;
+using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Models;
 using LoginAPI.Services.PasswordService;
 using LoginAPI.Attributes;
+using LoginAPI.Models;
 
 namespace LoginAPI.Controllers;
 
@@ -187,6 +189,50 @@ public class UserController : ControllerBase
         return NoContent();
     }
 
+    // Give the user keys if the key is not in the database, this method should add the key to the database and the apply the key to the user
+    [Authorize(Roles = "SuperAdmin")]
+    [HttpPut("GiveKeys")]
+    public async Task<IActionResult> updateUserAccessKeys(string username, [FromBody] AccessKeyUpdateDTO keyUpdateDTO)
+    {
+        var user = await _userContext.Users.FirstOrDefaultAsync(u => u.UserName.Equals(username));
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+        foreach (var keyValue in keyUpdateDTO.Keys.Distinct())
+        {
+            // Find or create the access key
+            var accessKey = await _userContext.Keys.FirstOrDefaultAsync(k => k.KeyName == keyValue);
+
+            if(accessKey == null)
+            {
+                accessKey = new Key { KeyName = NormalizeKey(keyValue), FriendlyKeyName = keyValue};
+                _userContext.Keys.Add(accessKey);
+                await _userContext.SaveChangesAsync();
+            }
+
+            // Check if the user already has the key or not
+            bool userHasKey = await _userContext.UserExtraKeys.AnyAsync(ek => ek.UserId == user.Id && accessKey.Id == ek.Id);
+
+            // Assign the Key if the user doesn't have the key
+            if (!userHasKey)
+            {
+                _userContext.UserExtraKeys.Add(new UserExtraKeys
+                {
+                    UserId = user.Id,
+                    KeyId = accessKey.Id,
+                    KeyValue = accessKey.KeyName,
+                    ExpirationDate = DateTime.UtcNow.AddDays(1)
+                });
+            }
+
+        }
+
+        await _userContext.SaveChangesAsync();
+        return Ok("Keys successfully assigned");
+
+    }
+
     // Super Admin Promotes A Regular User To Admin User
     [Authorize(Roles = "SuperAdmin")]
     [HasKey("PromoteUsers")]
@@ -273,15 +319,24 @@ public class UserController : ControllerBase
     {
         return await _userContext.Users.AnyAsync(e => e.UserName == username);
     }
-    // This function checks for the keys that a user has
-    private async Task<bool> UserHasAccess(string userId, string keyName)
-    {
-        var hasAccess = await _userContext.RoleUsers
-            .Where(ru => ru.UserId == userId)
-            .SelectMany(ru => _userContext.RoleKeys.Where(rk => rk.RoleId == ru.RoleId))
-            .AnyAsync(rk => _userContext.Keys.Any(k => k.Id == rk.KeyId && k.KeyName == keyName));
 
-        return hasAccess;
+    // Removes the spaces between the words and convert to pascal case
+    private static string NormalizeKey(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input)) return string.Empty;
+
+        var subStrings = input.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var result = "";
+
+        foreach (var subString in subStrings)
+        {
+            if (subString.Length > 0)
+            {
+                result += char.ToUpper(subString[0]) + subString.Substring(1).ToLower();
+            }
+        }
+
+        return result;
     }
 }
 
