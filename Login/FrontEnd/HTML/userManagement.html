@@ -15,10 +15,13 @@
 <body>
     <div class="wrapper" style="margin-bottom: 8px;">
         <h1>User Management Dashoboard</h1>
-        <div class="btnContainer">
+        <hr>
+        <div class="btnContainer" style="flex-direction: row;">
             <button class="btn verification">SuperAdmin</button>
-            <button class="btn" id="editAdmin">Edit Info</button>
-            <button class="btn" id="logout"></button>
+            <button class="btn" id="go-back">
+                <i class='bx bx-arrow-back bx-flip-vertical' style='color:#000000'></i>
+                back
+            </button>
         </div>
     </div>
     <div class="wrapper">
@@ -86,7 +89,8 @@
     </div>
 
     <div id="toastContainer">
-        <div id="actionToast" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="polite" aria-atomic="true">
+        <div id="actionToast" class="toast align-items-center text-white bg-success border-0" role="alert"
+            aria-live="polite" aria-atomic="true">
             <div class="d-flex">
                 <div class="toast-body">
                 </div>

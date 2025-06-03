@@ -67,7 +67,7 @@ h1 {
 
 .btnContainer {
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
 }
 
 .btn {
@@ -80,8 +80,8 @@ h1 {
     cursor: default;
 }
 
-.form-control:disabled{
-    color:black;
+.form-control:disabled {
+    color: black;
 }
 
 .dt-container select.dt-input {
@@ -100,22 +100,32 @@ div.dt-container .dt-paging .dt-paging-button:hover {
     color: white !important;
 }
 
-table {
+table.dataTable {
     table-layout: fixed;
-    width: 100%;
+    width: 100% !important;
 }
 
-th,
-td,
-tfoot {
-    text-align: center;
-    vertical-align: middle;
-    max-width: 100%;
-    word-wrap: break-word;
-    white-space: normal !important;
+table.dataTable th.dt-type-numeric,
+table.dataTable th.dt-type-date,
+table.dataTable td.dt-type-numeric,
+table.dataTable td.dt-type-date {
+    text-align: start;
 }
 
-.input-box{
+table.dataTable>tbody>tr>th,
+table.dataTable>tbody>tr>td {
+    padding: 8px 10px;
+    text-align: start;
+    word-break: break-word;
+    white-space: normal;
+}
+
+div.dt-container select.dt-input {
+    padding: 4px;
+    margin-right: 5px;
+}
+
+.input-box {
     margin-top: 10px;
     margin-bottom: 10px;
 }
@@ -129,7 +139,7 @@ tfoot {
     border: 2px solid rgba(255, 255, 255, .2);
     border-radius: 40px;
     font-size: 16px;
-    color:#fff;
+    color: #fff;
     padding: 20px 45px 20px 20px;
 }
 
@@ -144,7 +154,7 @@ tfoot {
 
 .modal-header {
     background: #532AAE;
-    color:#fff;
+    color: #fff;
     border: 2px solid rgba(255, 255, 255, .2);
 }
 
@@ -156,13 +166,13 @@ tfoot {
 
 .modal-footer {
     background: #532AAE;
-    color:#fff;
+    color: #fff;
     border: 2px solid rgba(255, 255, 255, .2);
     flex-wrap: nowrap;
 }
 
 
-.modal-body .wrapper{
+.modal-body .wrapper {
     width: 100%;
     background-color: rgba(0, 0, 0, .1);
     border: 2px solid rgba(255, 255, 255, .3);
@@ -174,10 +184,10 @@ tfoot {
 }
 
 i.bx {
-  font-family: 'boxicons' !important;
+    font-family: 'boxicons' !important;
 }
 
-#toastContainer{
+#toastContainer {
     position: absolute;
     left: 0;
     bottom: 0;

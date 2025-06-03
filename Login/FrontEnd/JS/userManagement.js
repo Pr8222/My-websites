@@ -6,6 +6,7 @@ $(document).ready(function () {
       url: "http://localhost:5224/api/User",
       type: "GET",
       dataSrc: "data",
+      responsive: true,
       headers: {
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
@@ -133,14 +134,9 @@ $(document).ready(function () {
   });
 
   // Logs out the admin
-  $("#logout").on("click", (ev) => {
+  $("#go-back").on("click", (ev) => {
     ev.preventDefault();
-
-    localStorage.removeItem("token");
-    sessionStorage.removeItem("token");
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-
-    document.location.href = "/HTML/login.html";
+    document.location.href = "/HTML/adminDashboard.html";
   });
 
   // This function is called when the super admin wants to promote a normal user

@@ -15,74 +15,31 @@
 <body>
     <div class="wrapper" style="margin-bottom: 8px;">
         <h1>User Management Dashoboard</h1>
+        <hr>
         <div class="btnContainer">
-            <button class="btn verification">SuperAdmin</button>
-            <button class="btn" id="editAdmin">Edit Info</button>
-            <button class="btn" id="logout"><i class="fa-solid fa-arrow-left fa-lg" style="color: #000000;"></i></button>
+            <button class="btn" id="go-back">
+                <i class='bx bx-arrow-back bx-flip-vertical' style='color:#000000'></i>
+                back
+            </button>
         </div>
     </div>
     <div class="wrapper">
-        <table id="usersTable" style="font-size: 12px;">
+        <table id="keysTable" style="font-size: 12px;">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Age</th>
-                    <th>Role</th>
-                    <th>Actions</th>
+                    <th>Key Name</th>
+                    <th>Friendly Key Name</th>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
                     <th>ID</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Age</th>
-                    <th>Role</th>
-                    <th>Actions</th>
+                    <th>Key Name</th>
+                    <th>Friendly Key Name</th>
                 </tr>
             </tfoot>
         </table>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="showModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Show all users</h1>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="wrapper">
-                        <div class="userId">
-                            <p>User Id:</p>
-                        </div>
-                        <div class="userName">
-                            <p>Username:</p>
-                        </div>
-                        <div class="userEmail">
-                            <p>User Email:</p>
-                        </div>
-                        <div class="userAge">
-                            <p>User Age:</p>
-                        </div>
-                        <div class="userRole">
-                            <p>User Role:</p>
-                        </div>
-                        <div class="userKeys">
-                            <p>User Keys:</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
     </div>
 
     <div id="toastContainer">
@@ -97,7 +54,7 @@
     <script src="/JS/bootstrap.bundle.min.js"></script>
     <script src="/JS/jquery-3.7.1.js"></script>
     <script src="/JS/datatables.min.js"></script>
-    <script src="/JS/userManagement.js"></script>
+    <script src="/JS/showKeys.js"></script>
 </body>
 
 </html>
