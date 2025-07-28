@@ -6,3 +6,6 @@ Login/FrontEnd/package-lock.json
 Datatables/response.json
 Datatables/package-lock.json
 Datatables/node_modules/.package-lock.json
+Login/BackEnd/appsettings.Development.json
+Login/BackEnd/appsettings.json
+.vscode
